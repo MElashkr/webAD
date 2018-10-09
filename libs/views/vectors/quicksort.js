@@ -47,6 +47,8 @@ VectorView.prototype.draw=function(){
 	}
 	var h=(45+biggestNum*3)*this.scale;
 	
+	if(h < 435)
+		h = 435;
 	this.stage.setHeight(h);
 	this.stage.setWidth(w);
 	this.stage.removeChildren();

@@ -54,7 +54,7 @@ VectorView.prototype.draw=function(){
 	}
 	var h=(45+biggestNum*3)*this.scale;
 	
-	this.stage.setHeight(h * 2 + 20 * this.scale);
+	this.stage.setHeight(h * 2 + 20 * this.scale+235);
 	this.stage.setWidth(w * 2) + 75*this.scale;
 	this.stage.removeChildren();
 
@@ -123,7 +123,7 @@ VectorView.prototype.draw=function(){
 	var textIntro = new Kinetic.Text({
 		x: 10,
 		y: h + 10*this.scale,
-		text: 'Helparray',
+		text: 'Hilfsarray',
 		fontSize: 15*this.scale,
 		fontFamily: 'Calibri',
 		fill: 'black',

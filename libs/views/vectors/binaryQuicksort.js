@@ -43,8 +43,14 @@ VectorView.prototype.draw = function () {
     var opacity = 1;
     var w = ((2 + this.model.column) * rect_size + stroke_width * 2) * 5;
     var h = (this.model.rows * rect_size + stroke_width * 5) + 2 * rect_size;
-    this.stage.setHeight(h * 2);
-    this.stage.setWidth(w * 2);
+
+    if (h > 300)
+        h = h-100
+    if (w > 900)
+        w = w-300
+        
+    this.stage.setHeight(h * 1.5);
+    this.stage.setWidth(w * 1.5);
     this.stage.removeChildren();
     var layer = new Kinetic.Layer();
 

@@ -13,6 +13,8 @@ function Vector()
     this.colors = ["#000000", "#000000", "#9acd32","#228b22", "#32CD32"]; //Black, Black, Blue, Darkgreen, Green
     this.paused = true;
     this.speed = 7;
+    
+    this.firstNext = true;
 }
 Vector.prototype.getMatrix = function(columns)
 {
@@ -582,7 +584,11 @@ Vector.prototype.setKeylength = function()
 Vector.prototype.lsdRadixsort = function()
 {
     var matrix = this;
-
+    if(matrix.firstNext && matrix.actStateID === 1 && matrix.speed != 7){
+        matrix.actStateID = 0;
+        matrix.firstNext = false;
+    }
+    
     if (matrix.actStateID == 0)
     {
         matrix.elementsInSort = matrix.elements.slice();
@@ -703,12 +709,16 @@ Vector.prototype.lsdRadixsortOneStep = function()
     if (!this.finished)
     {
         var matrix = this;
-
+        if(matrix.firstNext && matrix.actStateID === 1 && matrix.speed === 0){
+            matrix.actStateID = 0;
+            matrix.firstNext = false;
+        }
+        
         if (matrix.actStateID == 0)
         {
             matrix.elementsInSort = matrix.elements.slice();
             matrix.actualRow = matrix.elementsInSort[0].length - 1;
-
+            
             matrix.saveInDB();
         }
 

@@ -313,7 +313,12 @@ Vector.prototype.quicksort=function(){
 						vector.setColorsQuicksort();
 						vector.draw();
 						vector.saveInDB();
-						lToRight(vector);
+						
+						if(vector.speed === 0){
+							un_pause();
+						}else{
+							lToRight(vector);	
+						}
 					}
 					else{
 						rToLeftDelay=0;
@@ -340,7 +345,13 @@ Vector.prototype.quicksort=function(){
 						vector.setColorsQuicksort();
 						vector.draw();
 						vector.saveInDB();
-						rToLeft(vector);
+						
+						if(vector.speed === 0){
+							un_pause();
+						}else{
+							rToLeft(vector);	
+						}
+						
 					}
 					
 					else if(!vector.crossed){
@@ -350,7 +361,11 @@ Vector.prototype.quicksort=function(){
 						vector.setColorsQuicksort();
 						vector.draw();
 						vector.saveInDB();
-						step(vector);
+						if(vector.speed === 0 ){
+							un_pause();
+						}else{
+							step(vector);	
+						}
 					}
 					else{
 						var tmp=vector.elements[vector.r].value;
@@ -440,8 +455,13 @@ Vector.prototype.quicksort=function(){
 Vector.prototype.getElementsByPrompt=function(){
 	 var tempElements=[];
 
-	 var valuesInString=prompt("Please enter the elements (separated by space):\nValues > 999 are ignored");
-
+	var promptMessage = "Please enter the elements (separated by space):\nValues > 999 are ignored";
+	var valuesInString = validInput(promptMessage);
+	
+	if(valuesInString === null){
+		return;
+	}
+	
 	 var tempValsStr = valuesInString.split(" "); 
 
 	 var _in=false;
@@ -460,6 +480,52 @@ Vector.prototype.getElementsByPrompt=function(){
 	 }
 	 else
 		 return false;
+}
+
+function validInput(promptMessage){
+		var dataToValid= prompt(promptMessage);
+		data = dataToValid;
+			do{
+				var isNewvalNotValid = false;
+				if (dataToValid === null)
+					return null;
+					
+				if (/\s/.test(dataToValid)) {
+   					 var dataArray = dataToValid.split(' ');
+						for (var i = 0; i<dataArray.length; i++){
+							if (isNaN(dataArray[i])){
+								alert("Value ("+ dataArray[i]+ ") not allowed. Please enter a number");
+								isNewvalNotValid = true;
+								break;
+							}else if (dataArray[i] > 999){
+								alert("Value not allowed. Please enter a number less than 999");
+								isNewvalNotValid = true;
+								break;
+							}
+						}
+				}else {
+					dataToValid = parseInt(dataToValid);
+					
+					
+					if (isNaN(dataToValid))
+					{
+						alert("Value not allowed. Please enter a number");
+						isNewvalNotValid = true;
+					}else if (dataToValid > 999){
+						alert("Value not allowed. Please enter a number less than 999");
+						isNewvalNotValid = true;
+					}
+				}
+				
+				if (isNewvalNotValid){
+					dataToValid = (prompt(promptMessage));
+					data = dataToValid;
+				}
+					
+				
+			}while(isNewvalNotValid);
+			
+			return data;
 }
 
 Vector.prototype.example=function(){

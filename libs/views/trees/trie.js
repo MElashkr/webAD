@@ -20,8 +20,10 @@ function TrieView(_model) {
 
 TrieView.prototype.setDimensions = function(){
   var container = $(this.stage.attrs.container);
-  this.stage.setWidth(container.prop("scrollWidth") - 10);
-  this.stage.setHeight(container.prop("scrollHeight") - 50);
+  // this.stage.setWidth(420+ container.prop("scrollWidth") - 10);
+  // this.stage.setHeight(container.prop("scrollHeight") - 50);
+   this.stage.setWidth(1000);
+  this.stage.setHeight(410);
 };
 
 TrieView.prototype.initStage = function(cont) {
@@ -108,7 +110,11 @@ TrieView.prototype.draw = function() {
   this.stage.setHeight(h);
   this.stage.setWidth(w);
 	*/
-
+  var h = 420;
+  if (this.scale > 1.1)
+    h *= this.scale;
+     this.stage.setHeight(h);
+     
   this.stage.removeChildren();
 
   var layer = new Kinetic.Layer();

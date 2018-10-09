@@ -150,8 +150,8 @@ HashTableView.prototype.draw=function(){
 	layer.add(toAdd);
 
 	
-	var h=100*this.scale+m.rows.length*100*this.scale;
-	var w=0;
+	var h=40*this.scale+m.rows.length*50*this.scale;
+	var w = 0;
 	
 	if(calc.getX()+calc.getWidth()>fillFactor.getX()+fillFactor.getWidth() && 
 			calc.getX()+calc.getWidth() > toAdd.getX()+toAdd.getWidth())

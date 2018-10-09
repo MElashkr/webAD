@@ -438,16 +438,16 @@ BisehView.prototype.draw = function () {
     var hight = t_counter * 300* this.scale + this.model.entrie_depth * 300 * this.scale;
 
     if (hight < 720)
-        this.stage.setHeight(720);
+        this.stage.setHeight(435);
     else
         this.stage.setHeight(hight);
 
     var width = this.model.index_depth * 700 * this.scale + allValues.length * box_width/2;
 
-    if (width < 1200)
-        this.stage.setWidth(1200);
+    if (width < 1000)
+        this.stage.setWidth(width-100);
     else
-        this.stage.setWidth(width);
+        this.stage.setWidth(width -350);
 
     this.stage.add(layer);
 
@@ -469,10 +469,15 @@ BisehView.prototype.draw = function () {
     }
 
     // Play-Pause Button
-    if (this.model.queueWorks && this.model.speed != 0 || this.model.working && this.model.speed != 0)
+    if (this.model.queueWorks && this.model.speed != 0 || this.model.working && this.model.speed != 0){
         this.playButton.addClass("p1"); // Show Pause Btn
-    else
+        changeTextToPlayModus(false);
+    }
+    else{
         this.playButton.removeClass("p1"); // Show Play Btn
+        changeTextToPlayModus(true);
+    }
+        
 
 
 }

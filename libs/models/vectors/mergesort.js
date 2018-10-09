@@ -11,10 +11,8 @@ function Element(value){
 
 function Vector(){
 	this.view=new VectorView(this);
-	if(this.db == null){
-		this.db=[];
-		this.actStateID=-1;
-	}
+	this.db=[];
+	this.actStateID=-1;
 	this.elements=[];
 	
 	this.seperatedElements=[];
@@ -33,16 +31,12 @@ function Vector(){
 	this.newPointer=0;
 	
 	this.lastPos = -1;
-	//Helper for saving when the status = 0
-	this.savedStatus = false;
+	
 }
 
 Vector.prototype.init=function(){
 	this.elements=[];
-	if(this.db == null){
-		this.db=[];
-		this.actStateID=-1;
-	}
+
 	this.col1="#00FF80";
 	//this.col2="#00FFFF";
 	this.col3="#FF0000";
@@ -66,75 +60,71 @@ Vector.prototype.init=function(){
 	
 	this.stepDelay=0;
 	
-	this.paused=true;
+	this.paused=false;
 	this.finished=false;
-	this.savedStatus = false;
-	//if(this.actStateID!=-1)
-	//	this.saveInDB();
+	if(this.actStateID!=-1)
+		this.saveInDB();
 }
 
 Vector.prototype.saveInDB=function(){
-	if(this.status > 0 || !this.savedStatus){
-		this.savedStatus = true;
-		var count=this.db.length-1;
-	 	if(count!=this.actStateID){
-	 		this.db.splice(this.actStateID+1,count-this.actStateID);
-	 	}
+	var count=this.db.length-1;
+ 	if(count!=this.actStateID){
+ 		this.db.splice(this.actStateID+1,count-this.actStateID);
+ 	}
 
-		var nextID=this.db.length;
+	var nextID=this.db.length;
 	
-		var new_state = this.copy();
-		//code snippet for ignoring duplicates
-		var last_id=this.db.length-1;
-		var last_state=this.db[last_id];
+	var new_state = this.copy();
+	//code snippet for ignoring duplicates
+	var last_id=this.db.length-1;
+	var last_state=this.db[last_id];
 	
-		var same=true;
+	var same=true;
 	
-		if(last_state==undefined || last_state.elements.length!=new_state.elements.length ||
-				last_state.speed!=new_state.speed){
-			same=false;
+	if(last_state==undefined || last_state.elements.length!=new_state.elements.length ||
+			last_state.speed!=new_state.speed){
+		same=false;
+	}
+	else{
+		for(var i=0;i<new_state.elements.length;i++){
+			if(new_state.elements[i].color!=last_state.elements[i].color ||
+					new_state.elements[i].value!=last_state.elements[i].value)
+				same=false;
+		}
+		if(new_state.doesSort != last_state.doesSort){
+			same = false;
+		}
+		else if (new_state.newVector.length != last_state.newVector.length){
+			same = false;
 		}
 		else{
-			for(var i=0;i<new_state.elements.length;i++){
-				if(new_state.elements[i].color!=last_state.elements[i].color ||
-						new_state.elements[i].value!=last_state.elements[i].value)
+			for(var i=0;i<new_state.newVector.length;i++){
+				if(new_state.newVector[i].color!=last_state.newVector[i].color ||
+						new_state.newVector[i].value!=last_state.newVector[i].value)
 					same=false;
 			}
-			if(new_state.doesSort != last_state.doesSort){
-				same = false;
-			}
-			else if (new_state.newVector.length != last_state.newVector.length){
+		}
+		if(typeof new_state.seperatedElements != typeof last_state.seperatedElements){
+			same = false;
+		}
+		else if(typeof new_state.seperatedElements != 'undefinied'){
+			if(new_state.seperatedElements.length != last_state.seperatedElements.length){
 				same = false;
 			}
 			else{
-				for(var i=0;i<new_state.newVector.length;i++){
-					if(new_state.newVector[i].color!=last_state.newVector[i].color ||
-							new_state.newVector[i].value!=last_state.newVector[i].value)
-						same=false;
-				}
-			}
-			if(typeof new_state.seperatedElements != typeof last_state.seperatedElements){
-				same = false;
-			}
-			else if(typeof new_state.seperatedElements != 'undefinied'){
-				if(new_state.seperatedElements.length != last_state.seperatedElements.length){
-					same = false;
-				}
-				else{
-					for(var i = 0; i < new_state.seperatedElements.length; i++){
-						if(new_state.seperatedElements[i].length != last_state.seperatedElements[i])
-							same = false;
-						//wir müsse nicht weiter prüfen, da die Reihenfolge innerhalb der Arrays gleich sein sollte
-					}
+				for(var i = 0; i < new_state.seperatedElements.length; i++){
+					if(new_state.seperatedElements[i].length != last_state.seperatedElements[i])
+						same = false;
+					//wir müsse nicht weiter prüfen, da die Reihenfolge innerhalb der Arrays gleich sein sollte
 				}
 			}
 		}
-		//end code snippet for ignoring duplicates
-		if(!same){
-			this.db.push(new_state);
+	}
+	//end code snippet for ignoring duplicates
+	if(!same){
+		this.db.push(new_state);
 		
-			this.actStateID=nextID;
-		}
+		this.actStateID=nextID;
 	}
 }
 
@@ -151,7 +141,6 @@ Vector.prototype.copy=function(){
 	
 	newVector.status = this.status;
 	newVector.doesSort=this.doesSort;
-	newVector.savedStatus = this.savedStatus;
 	if(this.doesSort){
 		newVector.pointer1=this.pointer1;
 		newVector.pointer2=this.pointer2;
@@ -208,7 +197,6 @@ Vector.prototype.replaceThis=function(toCopy){
 	this.status = toCopy.status;
 	
 	this.doesSort=toCopy.doesSort;
-	this.savedStatus = toCopy.savedStatus;
 	if(toCopy.doesSort){
 		this.pointer1=toCopy.pointer1;
 		this.pointer2=toCopy.pointer2;
@@ -261,9 +249,6 @@ Vector.prototype.prev=function(){
 	      	this.replaceThis(rs);
 	      	this.draw();
 		}
-		else if(this.actStateID == 0){
-			this.firstState();
-		}
 	}
 	else
 		window.alert("Pause the sorting first!");
@@ -310,7 +295,6 @@ Vector.prototype.lastState=function(){
 }
  
 Vector.prototype.setRandomElements=function(){
-
 	 var tempElements=[];
 	 var tempVal;
 	 var number=Math.floor(Math.random() * (20 - 1 + 1)) + 1;
@@ -319,12 +303,10 @@ Vector.prototype.setRandomElements=function(){
 		 tempVal=parseInt(Math.random()*40,10);
 		 tempElements.push(new Element(tempVal));
 	 }
+
 	 this.init();
 	 this.elements=tempElements;
-	this.setColorsMergeSort();
-	this.saveInDB();
-	this.draw();
-	this.mergeSort();
+	 this.mergeSort();
 }
  
 Vector.prototype.setColorsMergeSort=function(){
@@ -371,10 +353,6 @@ Vector.prototype.mergeSort=function(){
 	var start=0;
 	var end=this.elements.length-1;
 
-	this.setColorsMergeSort();
-	this.draw();
-	//this.saveInDB();
-
 	function step(vector){
 		var firstDelay=0;
 		
@@ -396,56 +374,41 @@ Vector.prototype.mergeSort=function(){
 							//Wir müssen weiter seperieren
 							var helpSeperated = [];
 							var counter = 0;
-							//Count of HelpSeperated with only one vector. So if this counter == helpSeperated.lengh --> then status + 1 if 
-							var oneCounter = 0;				
+							
 							for(var i=0;i<vector.seperatedElements.length;i++){
 								helpSeperated[counter] = 0;
 								if(vector.seperatedElements[i] >= 2){
 									//Aufteilen des Vektors und 
 									var middle = Math.floor(vector.seperatedElements[i] / 2);
 									helpSeperated[counter] = middle;
-									if(middle == 1)
-										oneCounter++;
 									//helpSeperated[i].push(help2Seperated);
 									helpSeperated[counter + 1] = vector.seperatedElements[i] - middle;
-									if(vector.seperatedElements[i] - middle == 1)
-										oneCounter++;
 									//helpSeperated[i].push(help2Seperated);
 									counter ++;
 								}
 								else{
 									helpSeperated[counter] = 1;
-									oneCounter++;
 								}
 								counter ++;
 							}
 							vector.seperatedElements = helpSeperated;
-							if(oneCounter == helpSeperated.length){
-								//Wir müssen den Status erhöhen
-								status ++;
-								this.savedStatus = false;
-								vector.lastPos = -1;
-							}
 							
 						}
 						else{
 							//Wir müssen den Status erhöhen
 							status ++;
-							this.savedStatus = false;
 							vector.lastPos = -1;
 						}
 						
 						vector.status = status;
 						vector.setColorsMergeSort();
 						vector.draw();
-						//Saving to much: Only save when status > 0
-						if(status > 0){
-							vector.saveInDB();
-						}
-						//if(status == 0){
-							step(vector);
-							//Only do step when there will be no other action.
-						//}
+						vector.saveInDB();
+						if(vector.speed === 0){
+							un_pause();
+						}else{
+							step(vector);	
+						}						
 					}
 					else if(status == 1){
 						
@@ -507,7 +470,13 @@ Vector.prototype.mergeSort=function(){
 						vector.setColorsMergeSort();
 						vector.draw();
 						vector.saveInDB();
-						step(vector);
+						
+						if(vector.speed === 0 ){
+							un_pause();	
+						}else {
+							step(vector);
+						}
+						
 						return;
 					}
 				}, firstDelay)
@@ -539,16 +508,25 @@ Vector.prototype.mergeSort=function(){
 					}
 					if(vector.pointer1>=start2 && vector.pointer2 < start2 + len2)
 					{
-						vector.newVector[vector.newPointer ]=vector.elements[vector.pointer2];
-						vector.elements[vector.pointer2] = new Element(0);
-						vector.pointer2++;
+						//Alle Verbleibenden setzen
+						while (vector.pointer2 < start2 + len2){
+							vector.newVector[vector.newPointer ]=vector.elements[vector.pointer2];
+							//Disen Vektor verstecken
+							vector.elements[vector.pointer2] = new Element(0);
+							vector.pointer2++;
+							vector.newPointer++;
+						}
 						done=false;
 					}
 					else if(vector.pointer2 == start2 + len2 && vector.pointer1 < start2)
 					{
-						vector.newVector[vector.newPointer]=vector.elements[vector.pointer1];
-						vector.elements[vector.pointer1] = new Element(0);
-						vector.pointer1++;
+						while (vector.pointer1 < start2){
+							vector.newVector[vector.newPointer]=vector.elements[vector.pointer1];
+							//Disen Vektor verstecken
+							vector.elements[vector.pointer1] = new Element(0);
+							vector.pointer1++;
+							vector.newPointer++;
+						}
 						done=false;
 					}
 					else if(vector.pointer2< start2 + len2 && vector.pointer1 < start2)
@@ -584,7 +562,12 @@ Vector.prototype.mergeSort=function(){
 					vector.setColorsMergeSort();
 					vector.draw();
 					vector.saveInDB();
-					step(vector);
+					
+					if(vector.speed === 0){
+						un_pause();
+					}else{
+						step(vector);	
+					}
 					
 				//}, 100*vector.speed)
 			}
@@ -602,8 +585,12 @@ Vector.prototype.mergeSort=function(){
 Vector.prototype.getElementsByPrompt=function(){
 	 var tempElements=[];
 
-	 var valuesInString=prompt("Please enter the elements (separated by space):\nValues > 999 are ignored");
-
+	 var promptMessage = "Please enter the elements (separated by space):\nValues > 999 are ignored";
+	var valuesInString = validInput(promptMessage);
+	
+	if(valuesInString === null){
+		return;
+	}
 	 var tempValsStr = valuesInString.split(" "); 
 
 	 var _in=false;
@@ -618,13 +605,56 @@ Vector.prototype.getElementsByPrompt=function(){
 	 if(_in){
 		 this.init();
 		 this.elements=tempElements;
-		 this.setColorsMergeSort();
-		 this.saveInDB();
-		 this.draw();
 		 this.mergeSort();
 		 return true;
 	 }
 	 else return false;
+}
+
+function validInput(promptMessage){
+		var dataToValid= prompt(promptMessage);
+		data = dataToValid;
+			do{
+				var isNewvalNotValid = false;
+				if (dataToValid === null)
+					return null;
+					
+				if (/\s/.test(dataToValid)) {
+   					 var dataArray = dataToValid.split(' ');
+						for (var i = 0; i<dataArray.length; i++){
+							if (isNaN(dataArray[i])){
+								alert("Value ("+ dataArray[i]+ ") not allowed. Please enter a number");
+								isNewvalNotValid = true;
+								break;
+							}else if (dataArray[i] > 999){
+								alert("Value not allowed. Please enter a number less than 999");
+								isNewvalNotValid = true;
+								break;
+							}
+						}
+				}else {
+					dataToValid = parseInt(dataToValid);
+					
+					
+					if (isNaN(dataToValid))
+					{
+						alert("Value not allowed. Please enter a number");
+						isNewvalNotValid = true;
+					}else if (dataToValid > 999){
+						alert("Value not allowed. Please enter a number less than 999");
+						isNewvalNotValid = true;
+					}
+				}
+				
+				if (isNewvalNotValid){
+					dataToValid = (prompt(promptMessage));
+					data = dataToValid;
+				}
+					
+				
+			}while(isNewvalNotValid);
+			
+			return data;
 }
 
 Vector.prototype.example=function(){

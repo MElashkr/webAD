@@ -70,7 +70,7 @@ BinTreeView.prototype.draw=function(){
 	
 	var _radius=20*this.scale;
 	var w=(_radius*2.5)*(Math.pow(2,(level-1)))*this.scale;
-	var h=500;
+	var h=435;
 	if(level>4)
 		h+=(level-4)*7*_radius;
 	if(this.scale>1.1)
@@ -98,7 +98,7 @@ BinTreeView.prototype.draw=function(){
 			var xPos;
 			if(al==1){
 				xPos=(_radius*2.5)*(Math.pow(2,(level-1))/2);
-				if(xPos<500)xPos=500;
+				if(xPos<435)xPos=435;
 			}
 			
 			else{

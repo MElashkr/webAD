@@ -260,7 +260,7 @@ HeapView.prototype.draw=function(){
 	}
 	
 	var w=firstXLastLevel+(this.model.nodes.length*42*this.scale+this.model.sorted.length*42*this.scale)+250*this.scale;
-	var h=500;
+	var h=435;
 	if(level>4)
 		h+=(level-4)*7*_radius;
 	if(this.scale>1.1)

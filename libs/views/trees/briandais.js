@@ -20,8 +20,10 @@ function BriandaisView(_model) {
 
 BriandaisView.prototype.setDimensions = function() {
   var container = $(this.stage.attrs.container);
-  this.stage.setWidth(container.prop("scrollWidth") - 10);
-  this.stage.setHeight(container.prop("scrollHeight") - 50);
+  // this.stage.setWidth(container.prop("scrollWidth") - 10);
+  // this.stage.setHeight(container.prop("scrollHeight") - 50);
+  this.stage.setWidth(1000);
+  this.stage.setHeight(410);
 };
 
 BriandaisView.prototype.initStage = function(cont) {
@@ -91,6 +93,11 @@ BriandaisView.prototype.draw = function() {
     return shift;
   }
 
+  var h = 420;
+  if (this.scale > 1.1)
+    h *= this.scale;
+     this.stage.setHeight(h);
+     
   this.stage.removeChildren();
 
   var layer = new Kinetic.Layer();

@@ -33,7 +33,7 @@ function WeightedUndirectedGraph() {
     this.view = new UndirectedGraphView(this);
     this.db = [];
     this.actStateID = -1;
-    this.speed = 10; // Addition for Prim
+    this.speed = 5; // Addition for Prim
 }
 
 WeightedUndirectedGraph.prototype.fill = function (_matrix, startNode) {
@@ -429,9 +429,12 @@ WeightedUndirectedGraph.prototype.kruskal = function () {
             graph.draw();
             console.log(graph.p);
 
-            if (graph.i < graph.edges.length)
+            if (graph.i < graph.edges.length && graph.speed != 0)
                 step(graph);
-        }, 2000)
+            else{
+                    clearTimes();
+            }
+        },1000/graph.speed*5);
     }
 
     function startKruskal(graph) {

@@ -42,7 +42,7 @@ Vector.prototype.init = function () {
     this.finished = false;
     this.finishCounter = 0;
 
-
+    this.continueAnimation = true;
 };
 Vector.prototype.saveInDB = function (w) {
 
@@ -352,7 +352,11 @@ Vector.prototype.binaryQuicksort = function (currentElements, coloredElements, l
     var i = l;
     var j = r;
     var poshelp = pos;
+    var speedTemp = matrix.speed;
 
+    if(matrix.speed === 0)
+        speedTemp = 10;
+        
     if (matrix.allElementsPerColumn[w + 1] == null) {
         matrix.allElementsPerColumn[w + 1] = [];
         matrix.allColoredElementsPerColumn[w + 1] = [];
@@ -394,9 +398,8 @@ Vector.prototype.binaryQuicksort = function (currentElements, coloredElements, l
         }
         return;
     }
-
+    
     function step() {
-
         while (currentElements[w][i] == 0 && (i < j)) {
             coloredElements[w][i] = 3;
             i++;
@@ -412,8 +415,9 @@ Vector.prototype.binaryQuicksort = function (currentElements, coloredElements, l
         }
         matrix.saveInDB(w);
         matrix.draw();
-
-
+        
+      
+        
         setTimeout(function () {
             //        SWAP
             var copyarray = [];
@@ -436,10 +440,9 @@ Vector.prototype.binaryQuicksort = function (currentElements, coloredElements, l
             }
 
             matrix.draw();
-
+               
             if (j != i) {
-                step();
-
+                step();    
             } else {
 
                 var nullArray = matrix.getMatrix(matrix.column);
@@ -499,12 +502,10 @@ Vector.prototype.binaryQuicksort = function (currentElements, coloredElements, l
                 }
 
             }
-        }, 100 * matrix.speed);
+        }, 100 * speedTemp);
     }
 
     step();
-
-
 };
 
 Vector.prototype.size = function () {

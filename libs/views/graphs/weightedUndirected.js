@@ -431,10 +431,10 @@ UndirectedGraphView.prototype.draw=function(){
 	}
 	
 	var w=(25+150*this.model.gridSize)*this.scale;
-	var h=(25+150*this.model.gridSize)*this.scale;
+	var h=(15+140*this.model.gridSize)*this.scale;
 	
-	if(w<1000)w=1000;
-	if(h<500)h=500
+	if(w<800)w=800;
+	if(h<435)h=435;
 	
 	if(H>h)h=H;
 	if(W>w)w=W;

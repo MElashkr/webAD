@@ -1,22 +1,78 @@
 <!DOCTYPE html>
+<html lang="en">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<!-- Chrome, Firefox OS and Opera -->
+<meta name="theme-color" content="#0063A6">
+<!-- Windows Phone -->
+<meta name="msapplication-navbutton-color" content="#0063A6">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-status-bar-style" content="#0063A6">
+
+<!--[if !IE]><!-->
+<title>WebAD 2.0 &#9829; </title>
+<!--<![endif]-->
+
 <head>
-  <meta charset="UTF-8">
-  <title>webAD</title>
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  
-  <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
-  <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
-  
-  <script src="../../libs/externalLibs/jquery.min.js"></script>
-  <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
-  
-  <script type="text/javascript" src="../../libs/menu.js"></script>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<!-- Chrome, Firefox OS and Opera -->
+	<meta name="theme-color" content="#0063A6">
+	<!-- Windows Phone -->
+	<meta name="msapplication-navbutton-color" content="#0063A6">
+	<!-- iOS Safari -->
+	<meta name="apple-mobile-web-app-status-bar-style" content="#0063A6">
 
-  <script src="../../libs/views/dictionaries/biseh.js"></script>
-  <script src="../../libs/models/dictionaries/biseh.js"></script>
+	<!-- BEGIN WEBAD STYLES -->
+	<link href="../../styles/imgRD.css" rel="stylesheet" type="text/css" />
+	<link href="../../styles/styleRD.css" rel="stylesheet" type="text/css" />
+	<!-- END WEBAD STYLES -->
+	<link href="../../layout/assets/global/css/components-md.css" id="style_components" rel="stylesheet" type="text/css" />
+	<link href="../../layout/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="../../layout/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="../../layout/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"
+		media="screen" />
 
+	<!-- BEGIN THEME LAYOUT STYLES -->
+	<link href="../../layout/css/layout.min.css" rel="stylesheet" type="text/css" />
+	<link href="../../layout/css/themes/blue-steel.min.css" rel="stylesheet" type="text/css" />
+	<!-- END THEME LAYOUT STYLES -->
+	<link href="../../layout/css/adaptResponsive.css" rel="stylesheet" type="text/css" />
+
+	<script src="../../layout/Jquery/js/Framework/jquery-1.11.0.min.js"></script>
+	<script src="../../layout/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="../../layout/Jquery/js/UI/jquery-ui-1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+
+	<script src="../../layout/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+
+	<script src="../../layout/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+	<!-- <%--fancybox helpers--%> -->
+
+	<!-- BEGIN THEME GLOBAL SCRIPTS -->
+	<script src="../../layout/assets/global/scripts/app.min.js" type="text/javascript"></script>
+	<!-- END THEME GLOBAL SCRIPTS -->
+	<!-- BEGIN THEME LAYOUT SCRIPTS -->
+	<script src="../../layout/assets/scripts/layout.min.js" type="text/javascript"></script>
+	<script src="../../layout/assets/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
+	<!-- END THEME LAYOUT SCRIPTS -->
+
+	<script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
+	<script src="../../libs/views/dictionaries/biseh.js"></script>
+	<script src="../../libs/models/dictionaries/biseh.js"></script>
+	<!-- END JAVASCRIPTS -->
+
+	<!-- Mobile View-->
+	<meta name="viewport" content="user-scalable=yes, width=device-width, initial-scale=1.0" />
+
+	<meta name="distribution" content="global">
+	<meta name="rating" content="general">
+	<meta name="author" content="WebAD">
+	<meta name="publisher" content="WebAD">
+	<meta name="copyright" content="© WebAD Team 2018">
+
+	<meta name="resource-type" content="document">
+	<meta name="application-name" content="WebAD">
+	<meta name="msapplication-tooltip" content="WebAD Website">
+	<meta name="msapplication-window" content="width=1024;height=768">
 </head>
 
 <script>
@@ -115,11 +171,18 @@
                 biseh.continueTask(speed);
                 return;
             }
-
-
-		
 	}
-
+	
+     function changeTextToPlayModus(isPlayModus){
+         var btnElement = document.getElementById("p");        
+         var iconElement = document.getElementById("iconPlayPause");
+        if(isPlayModus){
+            btnElement.innerHTML = " <i class='fa fa-play-circle-o fa-lg'></i> Play"
+        }else {
+              btnElement.innerHTML = " <i class='fa fa-pause fa-lg'></i> Stop"
+        }
+    }
+	
 	function first(){
 		if(!biseh.working && !biseh.queueWorks){
 				clearTimes();
@@ -151,164 +214,251 @@
 			
 			if(  tmp >= 0 || 6 <= tmp){
                 biseh.speed=tmp;
+				
+				if(tmp===0){
+                 document.getElementById('alertbox').style.visibility='visible';
+                $('#alertbox').addClass('alert-box2-manuel').removeClass(' col-md-5 alert-box-manuel');
+                $('#alertbox').text('Manuel Mode');
+			}else if(tmp > 6){
+                $('#alertbox').addClass('col-md-5 alert-box-manuel').removeClass('col-md-3 alert-box2-manuel');
+                $('#alertbox').text('Allowed values from 0 to 6.');
+                 document.getElementById('alertbox').style.visibility='visible';
+            }else{
+                document.getElementById('alertbox').style.visibility='hidden';
+            }
+				
 				return;
 			} 
 			
 		}
 	}
 
-	
 </script>
 
-<body id="body" class="page" onload="init();example();return false;">
-<header id="header">
-	<ul>
-		<li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>
-		<li><a href="javascript:_class('config', 'hide')" class="conf">Config</a></li>
-		<li><a href="javascript:_class('about', 'hide')" class="idea">About</a></li>
-	</ul>
-</header>
-<aside>
-	<a href="../index.html" class="logo"></a>
-	<ul class="dis">
-		<li><a href="javascript:_class('vec', 'hide')" class="v"><span>Vectors</span></a></li>
-		<li><a href="javascript:_class('dic', 'hide')" class="d"><span>Dictionaries</span></a></li>
-		<li><a href="javascript:_class('lis', 'hide')" class="l"><span>Lists</span></a></li>
-		<li><a href="javascript:_class('gra', 'hide')" class="g"><span>Graphs</span></a></li>
-		<li><a href="javascript:_class('tre', 'hide')" class="t"><span>Trees</span></a></li>
-	</ul>
-</aside>
-<article>
-	<div id="menu" class="open">
-		<a href="javascript:_class('menu', 'open')">Biseh</a>
-		<input type="button" value="Create" id="create" onclick="create();return false;">
-		<input type="button" value="Add Value" id="add" onclick="add();return false;">
-		<input type="button" value="Remove Value" id="remove" onclick="remove();return false;">
-		<input type="button" value="Search for Value" id="search" onclick="search();return false;">	
-		<input type="button" value="Display Values" id="display" onclick="$('#containerWrapperE').toggle();return false">
-		<div id="containerWrapperE" style="margin:5px; display:none;">
-			<div id="containerElements" style="background:white; color:black; text-align:left;max-height: 150px;overflow: scroll;">	
+<body class="page-container-bg-solid page-md" style="background: #eff3f8;" onload="init();example();return false;">
+	<div class="page-container">
+		<div class="page-content-wrapper">
+			<div class="page-header navbar-white" style="background: #eff3f8; height: fit-content;">
+				<!-- BEGIN HEADER MENU -->
+				<div class="page-header-menu navbar-white">
+					<div class="container navbar-white">
+						<div class="hor-menu  hor-menu-light">
+							<div id="navPlaceholder">
+								<script src="../../layout/assets/global/scripts/nav-menu.js" type="text/javascript"></script>
+							</div>
+						</div>
+						<!-- END MEGA MENU -->
+					</div>
+				</div>
+				<!-- END HEADER MENU -->
+				<!-- <%--Top Header--%> -->
+				<div id="logo_minDevice" class="page-header-top">
+					<div class="container">
+						<div class="page-logo" style="/*width: 400px!important; */height: auto;">
+							<div class="row">
+								<div class="col-md-11">
+								</div>
+								<a href="../home/index.html">
+									<div class="col-md-1 logo logo-margin-top">
+									</div>
+								</a>
+							</div>
+						</div>
+						<a href="javascript:;" class="menu-toggler"></a>
+						<div class="top-menu">
+
+						</div>
+					</div>
+					<div class="container pull-center">
+					</div>
+				</div>
+				<!-- end top header -->
 			</div>
-		</div>	
-	</div>
-	<div id="container1"></div>
-</article>
-<footer>
-	<div class="rul">
-		<a href="#" class="l2" id="first" onclick="first();return false;"></a>
-		<a href="#" class="l1" id="prev" onclick="pre();return false;"></a>
-		<a href="#" id="p" onclick="play();return false;"></a>
-		<a href="#" class="r1" id="next" onclick="next();return false;"></a>
-		<a href="#" class="r2" id="last" onclick="last();return false;"></a>
-		<a href="#" class="z2" onclick="zoomOut();return false;"></a>
-		<a href="#" class="z1" onclick="zoomIn();return false;"></a>
-	</div>
-	webAD is a web-based system designed for simple and intuitive learning of Algorithms and Datastrures. For further questions please contact: <a href="mailto:begy.volodimir@gmail.com">begy.volodimir@gmail.com</a>
-</footer>
-<div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
-	<div class="pole">
-		<h2>Info</h2>
-		<h3>Legend</h3>
-		<ul style="list-style-type:none">
-			<li>b: datablock size</li>
-			<li>x: index depth</li>
-			<li>y: entry depth</li>
-		</ul>
-		Note: Setting the speed to zero or pressing pause causes the animation to halt. If you invoke an operation in a paused state the animation will <b>not</b> continue, unless you resume with the play button. You can resume from <i>any</i> state.
+			<!-- END HEADER MENU -->
+			<!-- <%--content--%> -->
+			<div class="page-content" style="padding-top: 0;">
+				<div class="container">
+				</div>
+				<div class="container">
 
-		<h3>Basics</h3>
-		<p>Bounded Index Size Extendible Hashing (BISEH) uses three hash functions to find the right index area, index entry and datablock. BISEH is characterized by a constant index size and is a new form of Extendible Hashing.
-		</p>
-		<p>
-			If a datablock reaches his limit, then the data area is going to expand.
-		</p>
-	</div>
-</div>
-<div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Config</h2>
-	Animation speed:
-  	<input type="number" name="speed" style="width:40px" id="speed" min="0" max="6" step="1" value=3 onchange="speed();return false;" >
-  	<p>
-  		Note: Larger numbers slow down and zero pauses the animation. 
-  	</p>
-	</div>
-</div>
-<div id="about" class="popup hide"><div class="closer" onclick="javascript:_class('about', 'hide')"></div><a href="javascript:_class('about', 'hide')" class="close">X</a>
-	<div class="pole2"><h2>About</h2>
-		<a href="http://gruppe.wst.univie.ac.at/workgroups/webAD" target="_blank">
-			<img src="../../images/uni.png" width="250px" alt="bsimage">
-		</a>
-		<a href="https://github.com/VolodimirBegy/webAD" target="_blank">
-			<img src="../../images/Octocat.png" width="100px" alt="bsimage">
-		</a>
-	</div>
-</div>
+					<div class="page-content-inner inner-conent-padding-top" style="background:white">
+						<!-- Conent WEB AD -->
+						<div class="tab-pane active" id="form_1">
+							<div class="portlet box blue">
+								<div class="portlet-title">
+									<div class="caption">
+										<i class="fa fa-gift"></i>Biseh</div>
+									<div class="tools">
+										<a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
+										<a href="#" data-toggle="modal" data-target="#modalConfig" class="fa fa-wrench" title="Configuration" style="color:white"></a>
+										<a href="#" data-toggle="modal" data-target="#modalInfo" class="fa fa-info-circle" title="Information" style="color:white"></a>
+									</div>
+								</div>
+								<div class="portlet-body form" style="display: block;">
+									<!-- BEGIN FORM-->
+									<div class="form-body">
+										<!--/row-->
+										<div class="row" id="options_desktop">
+											<div class="col-md-1">
+												<button type="button" class="btn blue disabled">Options</button>
+											</div>
+											<div class="col-md-10">
+												<button type="button" class="btn blue btn-outline" id="create" onclick="create();return false;">Create</button>
+												<button type="button" class="btn blue btn-outline" id="add" onclick="add();return false;">Add Value</button>
+												<button type="button" class="btn blue btn-outline" id="remove" onclick="remove();return false;">Remove Value</button>
+												<button type="button" class="btn blue btn-outline" id="search" onclick="search();return false;">Search for Value</button>
+												<!--TODO: adapt it-->
+												<!--<div id="containerWrapperE" style="margin:5px; display:none;">
+													<div id="containerElements" style="background:white; color:black; text-align:left;max-height: 150px;overflow: scroll;">
+													</div>
+												</div>-->
+											</div>
+										</div>
+										<!--/row-->
+										<div class="row" id="options_minDevice">
+											<div class="col-md-12">
+												<div class="dropdown">
+													<button class="btn blue dropdown-toggle" type="button" data-toggle="dropdown">Options
+                                                        <span class="caret"></span></button>
+													<ul class="dropdown-menu">
+														<li><button type="button" class="btn blue btn-outline btn-block" id="create" onclick="create();return false;">Create</button></li>
+														<li><button type="button" class="btn blue btn-outline btn-block" id="add" onclick="add();return false;">Add Value</button></li>
+														<li><button type="button" class="btn blue btn-outline btn-block" id="remove" onclick="remove();return false;">Remove Value</button></li>
+														<li><button type="button" class="btn blue btn-outline btn-block" id="search" onclick="search();return false;">Search for Value</button></li>
+													</ul>
+												</div>
+											</div>
+										</div>
 
-<div id="vec" class="popup hide"><div class="closer" onclick="javascript:_class('vec', 'hide')"></div><a href="javascript:_class('vec', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Vectors</h2>
-     	<ul>
-			<li><a href="../vectors/BubbleSort.html">Bubble Sort</a></li>
-			<li><a href="../vectors/SelectionSort.html">Selection Sort</a></li>
-			<li><a href="../vectors/MergeSort.html">Merge Sort</a></li>
-			<li><a href="../vectors/QuickSort.html">Quick Sort</a></li>
-			<li><a href="../vectors/RadixSort.html">LSD Radix Sort</a></li>
-			<li><a href="../vectors/BucketSort.html">Bucket Sort</a></li>
-			<li><a href="../vectors/CountingSort.html">Counting Sort</a></li>
-			<li><a href="../vectors/BinaryQuickSort.html">Binary Quicksort</a></li>
-			<li><a href="../vectors/BalancedMultiwayMerging.html">Balanced Multiway Merging</a></li>
-        </ul>
+										<div class="row">
+											<div id="container1" class="col-md-10 inner-content-container1">
+											</div>
+											<div class="col-md-2 padding-top-10" style="overflow:auto;">
+												<a href="javascript:;" class="text-blue" data-toggle="collapse" data-target="#containerWrapperE">Actual Values</a>
+												<div id="containerWrapperE" style="margin:10px; " class="collapse in">
+													<div id="containerElements" style="background:white; color:black; text-align:left;max-height: 150px;overflow: scroll;">
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-actions right">
+										<div class="row">
+											<div class="col-md-1">
+											</div>
+											<div class="col-md-6 text-center">
+												<button type="button" class="btn blue" id="first" onclick="first();return false;">
+                                            <i class="fa fa-fast-backward fa-lg"></i><span class="btn-recorder">First</span></button>
+												<button type="button" class="btn blue" id="prev" onclick="pre();return false;">
+                                            <i class="fa fa-backward fa-lg"></i><span class="btn-recorder">Previous</span></button>
+												<button type="button" class="btn blue" id="p" onclick="play();return false;">
+                                            <i id="iconPlayPause" class="fa fa-play-circle-o fa-lg"></i><span class="btn-recorder">Stop</span></button>
+												<button type="button" class="btn blue" id="next" onclick="next();return false;">
+                                            <i class="fa fa-forward fa-lg"></i><span class="btn-recorder">Next</span></button>
+												<button type="button" class="btn blue" id="last" onclick="last();return false;">
+                                            <i class="fa fa-fast-forward fa-lg"></i><span class="btn-recorder">Last</span></button>
+											</div>
+											<div class="col-md-1">
+											</div>
+											<div class="col-md-4 text-center">
+												<button type="button" class="btn green" onclick="zoomOut();return false;">
+                                            <i class="fa fa-search-minus fa-lg"></i><span class="btn-zoom">Zoom Out</span></button>
+												<button type="button" class="btn green" onclick="zoomIn();return false;">
+                                            <i class="fa fa-search-plus fa-lg"></i><span class="btn-zoom">Zoom In</span></button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- END FORM-->
+							</div>
+						</div>
+					</div>
+					<div class="footer">
+						<div class="container">
+							webAD is a web-based system designed for simple and intuitive learning of Algorithms and Datastrures. For further questions
+							please contact:
+							<a href="mailto:begy.volodimir@gmail.com">begy.volodimir@gmail.com</a>
+						</div>
+						<div id="return-to-top" class="scroll-to-top" title="return to top">
+							<i id="top-arrow"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
-</div>
-<div id="dic" class="popup hide"><div class="closer" onclick="javascript:_class('dic', 'hide')"></div><a href="javascript:_class('dic', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Dictionaries</h2>
-       	<ul>
-                        <li><a href="../dictionaries/DoubleHashing.html">Double Hashing</a></li>
-                        <li><a href="../dictionaries/LinearProbing.html">Linear Probing</a></li>
-                        <li><a href="../dictionaries/LinearHashing.html">Linear Hashing</a></li>
-                        <li><a href="../dictionaries/SeparateChaining.html">SeparateChaining</a></li>
-                        <li><a href="../dictionaries/ExtendibleHashing.html">Extendible Hashing</a></li>
-                        <li><a href="../dictionaries/Biseh.html">BISEH</a></li>
-        </ul>
+
+	<!-- BEGIN MODAL -->
+	<div id="modalInfo" class="modal fade" role="dialog" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Info</h4>
+				</div>
+				<div class="modal-body">
+					<h2>Info</h2>
+					<h3>Legend</h3>
+					<ul style="list-style-type:none">
+						<li>b: datablock size</li>
+						<li>x: index depth</li>
+						<li>y: entry depth</li>
+					</ul>
+					Note: Setting the speed to zero or pressing pause causes the animation to halt. If you invoke an operation in a paused state
+					the animation will <b>not</b> continue, unless you resume with the play button. You can resume from <i>any</i>					state.
+
+					<h3>Basics</h3>
+					<p>Bounded Index Size Extendible Hashing (BISEH) uses three hash functions to find the right index area, index entry and
+						datablock. BISEH is characterized by a constant index size and is a new form of Extendible Hashing.
+					</p>
+					<p>
+						If a datablock reaches his limit, then the data area is going to expand.
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
 	</div>
-</div>
-<div id="lis" class="popup hide"><div class="closer" onclick="javascript:_class('lis', 'hide')"></div><a href="javascript:_class('lis', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Lists</h2>
-     	<ul>
-             	<li>Coming soon</li>
-          </ul>
+	<!-- END MOAL -->
+	<!-- BEGIN MODAL -->
+	<div id="modalConfig" class="modal fade" role="dialog" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Config</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-12">
+							<div class="form-group">
+								<label class="control-label col-md-4">Animation speed:</label>
+								<div class="col-md-2">
+									<input type="number" class="input-control" name="speed" style="width:40px" id="speed" min="0" max="6" step="1" value="3"
+										onchange="speed();return false;">
+								</div>
+								<label id="alertbox" class="control-label col-md-5 alert-box-manuel" style="margin-top:5px;"></label>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<br/> For manual mode set animation speed to 0. In manual mode click "Next" to coninue animation for one step. Click
+							"Next" until animation ends or set animation speed back to automatic mode (speed from 1 to 6) and let it end automatically.
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
 	</div>
-</div>
-<div id="gra" class="popup hide"><div class="closer" onclick="javascript:_class('gra', 'hide')"></div><a href="javascript:_class('gra', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Graphs</h2>
-     	<ul>
-			<li><a href="../graphs/bfs.html">Breadth First Search</a></li>
-			<li><a href="../graphs/dfs.html">Depth First Search</a></li>
-			<li><a href="../graphs/kruskal.html">Kruskal</a></li>
-			<li><a href="../graphs/dijkstra.html">Dijkstra</a></li>
-              <li><a href="../graphs/prim.html">Prim</a></li>
-			<li><a href="../graphs/topo.html">Topologial Sort</a></li>
-			<li><a href="../graphs/floydwarshall.html">Floyd-Warshall</a></li>
-        </ul>
-	</div>
-</div>
-<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Trees</h2>
-	     <ul>
-              <li><a href="../trees/bst.html">Binary Search Tree</a></li>
-      		<li><a href="../trees/bplus1.html">B+ Tree 1</a></li>
-              <li><a href="../trees/bplus2.html">B+ Tree 2</a></li>
-              <li><a href="../trees/heap.html">Binary Heap</a></li>
-              <li><a href="../trees/heapSort.html">Heap Sort</a></li>
-              <li><a href="../trees/trie.html">Trie</a>
-                <ul>
-                  <li><a href="../trees/trie.html?type=patricia">PATRICIA</a></li>
-                  <li><a href="../trees/trie.html?type=briandais">De la Briandais</a></li>
-                </ul>
-              </li>
-              <li><a href="../trees/traversal.html">Traversal</a></li>
-              <li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
-          </ul>
-	</div>
-</div>
+	<!-- END MOAL -->
 </body>
+
 </html>

@@ -203,9 +203,11 @@ TwoThreeFour.prototype.addInt = function (val) {
 };
 
 TwoThreeFour.prototype.add = function () {
-    var strings = prompt("Add:");
+    
+    var strings = validInput("Add:");
     if (strings == null)
         return;
+        
     strings = strings.split(" ");
     for (var i = 0; i < strings.length; i++) {
         this.addInt(parseInt(strings[i]));
@@ -220,9 +222,14 @@ TwoThreeFour.prototype.resetColor = function (node) {
 };
 
 TwoThreeFour.prototype.search = function () {
-    var val = parseInt(prompt("Search for:"));
-    if (isNaN(val))
+    // var val = parseInt(prompt("Search for:"));
+    // if (isNaN(val))
+        // return;
+    var val = validInput("Search  for:");
+    if(val === null){
         return;
+    }
+    
     var tree = this;
     if (tree.root == undefined)
         return;
@@ -281,9 +288,10 @@ TwoThreeFour.prototype.search = function () {
 TwoThreeFour.prototype.remove = function () {
     if (this.root == undefined)
         return;
-    var strings = prompt("Remove:");
-    if (strings == null)
+    var strings = validInput("Remove:");
+    if (strings === null)
         return;
+        
     strings = strings.split(" ");
     for (var i = 0; i < strings.length; i++) {
         var val = parseInt(strings[i]);
@@ -476,3 +484,41 @@ TwoThreeFour.prototype.draw = function () {
     this.view.draw();
 };
 
+function validInput(promptMessage) {
+	var tmpValues = prompt(promptMessage);
+	
+	do{
+		var isNewvalNotValid = false;
+		var valuesToValid = tmpValues;
+		if (valuesToValid === null)
+			return null;
+		
+		if (/\s/.test(valuesToValid)) {
+					var dataArray = valuesToValid.split(' ');
+					for (var i = 0; i<dataArray.length; i++){
+						if (isNaN(dataArray[i]))
+							{
+								alert("Value ("+ dataArray[i] +") not allowed. Please enter a number");
+								isNewvalNotValid = true;
+								break;
+							}
+					}
+			}
+			else {
+				valuesToValid = parseInt(valuesToValid);
+				if (isNaN(valuesToValid))
+					{
+						alert("Value not allowed. Please enter a number");
+						isNewvalNotValid = true;
+					}
+			}
+			
+			if (isNewvalNotValid){
+				valuesToValid = (prompt(promptMessage));
+				tmpValues = valuesToValid;
+			}
+		
+	}while(isNewvalNotValid);
+	
+	return tmpValues;
+}

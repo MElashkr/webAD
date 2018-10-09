@@ -339,8 +339,9 @@ ExtendibleHashView.prototype.draw=function(){
 	var widthStage = margin_left_x + box_width*tmpBlockCount + offset_x_space_ib_id + 
 					 6*this.scale*tmpBlockCount + offset_x_status + 400*this.scale; // stroke,text offset + safety width
 	
-	if(heightStage< 600) heightStage=600;
-	if(widthStage< 800)  widthStage=800;
+	 if(heightStage< 435) heightStage=410;
+	 if(widthStage< 450 || widthStage > 450 )  widthStage= widthStage - 400;
+	
 	this.stage.setHeight(heightStage);
 	this.stage.setWidth(widthStage);
 
@@ -363,10 +364,15 @@ ExtendibleHashView.prototype.draw=function(){
 
 
 	// Play-Pause Button
-	if(this.model.working && this.model.speed !=0)
+	if(this.model.working && this.model.speed !=0){
 		this.playButton.addClass("p1"); // Show Pause Btn
-	else
+		changeTextToPlayModus(false);
+	}
+	else{
 		this.playButton.removeClass("p1"); // Show Play Btn
+		changeTextToPlayModus(true);
+	}
+		
 
 
 }

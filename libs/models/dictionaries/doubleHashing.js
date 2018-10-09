@@ -35,9 +35,11 @@ DoubleHashing.prototype.init=function(){
 	this.fillFactor=0;
 	this.calc=undefined;
 	if(this._static){
-		var size=parseInt(prompt("Size:"));
+		var size = validInput("Size:");
+		if (size === null){
+			return;
+		}
 		
-		if(isNaN(size))return;
 		for(var i=0;i<size;i++){
 			this.rows.push(new Row());	
 		}
@@ -216,6 +218,29 @@ DoubleHashing.prototype.extend=function(){
 		this.add(vals,0);
 }
 
+function validInput(promptMessage){
+	var newVal;
+	do{
+		newVal = (prompt(promptMessage));
+		if (newVal === null)
+			return null;
+		
+		newVal = parseInt(newVal);
+		var isNewvalNotValid = false;
+		
+		if (isNaN(newVal))
+		{
+			alert("Value not allowed. Please enter a number");
+			isNewvalNotValid = true;
+		}else if (newVal > 1000000000000000000){
+			alert("Value not allowed. Please enter a number less than 1000000000000000000");
+			isNewvalNotValid = true;
+		}
+		
+	}while(isNewvalNotValid);
+	return newVal;
+}
+
 DoubleHashing.prototype.add=function(toAdd,addIndex){
 	this.cal=undefined;
 
@@ -227,8 +252,11 @@ DoubleHashing.prototype.add=function(toAdd,addIndex){
 			var newVal=undefined;
 
 			if(toAdd==undefined){
-				newVal=parseInt(prompt("Add: \n(values > 1000000000000000000 are ignored)"));
-				if(isNaN(newVal) || newVal>1000000000000000000)return;
+				var promptMessage = "Add: \n(values > 1000000000000000000 are ignored)";
+				newVal = validInput(promptMessage);
+				if (newVal === null){
+					return;
+				}
 			}
 			else{
 				newVal=toAdd[addIndex];
@@ -426,10 +454,13 @@ DoubleHashing.prototype.search=function(){
 	var prevI;
 	//if(count==this.actStateID){
 		if(this.rows.length>0){
-
-			var newVal=parseInt(prompt("Search:"));
-			if(isNaN(newVal))return;
+			var promptMessage = "Search:";
+			var newVal = validInput(promptMessage);
 			
+			if (newVal === null){
+				return;
+			}
+				
 			this.working=true;
 			var index=newVal%this.rows.length;
 			var searchingNextFree=false;
@@ -562,9 +593,12 @@ DoubleHashing.prototype.remove=function(){
 	var prevI;
 	//if(count==this.actStateID){
 		if(this.rows.length>0){
-			var remVal=parseInt(prompt("Remove:"));
-			if(isNaN(remVal))return;
-
+			
+			       var remVal = validInput("Remove:");
+			       if (remVal === null){
+				       return;
+			       }
+			  	
 					this.working=true;
 					var index=remVal%this.rows.length;
 					var searchingNextFree=false;

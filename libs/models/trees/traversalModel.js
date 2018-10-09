@@ -243,7 +243,7 @@ function precolor(tree, btn, oldColor) {
 			marker = 0;
 			hj = 0;
 			lastStep = "";
-			btn.style.backgroundColor = oldColor;
+			/*btn.style.backgroundColor = oldColor;*/
 		}, delay+=(1000*tree.speed));
 	}
 }
@@ -299,7 +299,7 @@ function pre_manually(tree, btn, oldColor) {
 			running = "";
 			cc = 0;
 			marker = 0;
-			btn.style.backgroundColor = oldColor;
+			/*btn.style.backgroundColor = oldColor;*/
 			tree.saveInDB();
 			tree.draw();
 		}	
@@ -654,7 +654,7 @@ function postcolor(tree, visited, btn, oldColor) {
 				save2 = [];
 				idone = undefined;
 				nodeDone = [];
-				btn.style.backgroundColor = oldColor;
+				/*btn.style.backgroundColor = oldColor;*/
 			}, delay+=(1000*tree.speed));
 	}
 }
@@ -729,7 +729,7 @@ function post_manually(tree, visited, btn, oldColor) {
 			cc = 0;
 			marker = 0;
 			hj = 0;
-			btn.style.backgroundColor = oldColor;
+			/*btn.style.backgroundColor = oldColor;*/
 			tree.saveInDB();
 			tree.draw();
 		}
@@ -994,7 +994,7 @@ function incolor(tree, visited, btn, oldColor) {
 				lastStep = "";
 				marker = 0;
 				hj = 0;
-				btn.style.backgroundColor = oldColor;
+				/*btn.style.backgroundColor = oldColor;*/
 			}, delay+=(1000*tree.speed));
 	}
 }
@@ -1059,7 +1059,7 @@ function in_manually(tree, visited, btn, oldColor) {
 			cc = 0;
 			marker = 0;
 			hj = 0;
-			btn.style.backgroundColor = oldColor;
+			/*btn.style.backgroundColor = oldColor;*/
 			tree.saveInDB();
 			tree.draw();
 		}

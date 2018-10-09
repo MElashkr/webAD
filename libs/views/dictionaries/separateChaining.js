@@ -121,7 +121,7 @@ SepChainView.prototype.draw = function() {
 		}
 	}
 	this.stage.setWidth((140 + max * 140) * this.scale + 100 * this.scale);
-	this.stage.setHeight(100 * this.scale + this.model.rows.length * 100 * this.scale);
+	this.stage.setHeight(100 * this.scale + this.model.rows.length * 49 * this.scale);
 	this.stage.removeChildren();
 	this.stage.add(layer);
 }

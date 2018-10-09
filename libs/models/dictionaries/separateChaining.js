@@ -163,6 +163,7 @@ SepChain.prototype.replaceThis = function(sc) {
 }
 
 SepChain.prototype.insert = function(data) {
+
 	this.working = true;
 	var sc = this;
 	function timeout(sc, d, i, last) {
@@ -191,16 +192,22 @@ SepChain.prototype.insert = function(data) {
 
 SepChain.prototype.delete = function(data) {
 	var pos = this.hash(data);
+	var dataFound = false;
 	for(var i = 0; i < this.rows[pos].values.length; ++i) {
 		if(this.rows[pos].values[i] == data) {
 			this.calc = this.rows[pos].values[i] + " % " + this.rows.length + " = " + pos;
 			this.rows[pos].values.splice(i, 1);
 			--this.numItems;
+			dataFound = true;
 			break;
 		}
 	}
-	this.saveInDB();
-	this.draw();
+	if (!dataFound){
+		alert('Not Found');
+	}else{
+		this.saveInDB();
+		this.draw();
+	}
 }
 
 SepChain.prototype.hash = function(data) {

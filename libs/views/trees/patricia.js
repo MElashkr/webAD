@@ -20,8 +20,10 @@ function PatriciaView(_model) {
 
 PatriciaView.prototype.setDimensions = function(){
   var container = $(this.stage.attrs.container);
-  this.stage.setWidth(container.prop("scrollWidth") - 10);
-  this.stage.setHeight(container.prop("scrollHeight") - 50);
+  // this.stage.setWidth(container.prop("scrollWidth") - 10);
+  // this.stage.setHeight(container.prop("scrollHeight") - 50);
+  this.stage.setWidth(1000);
+  this.stage.setHeight(420);
 };
 
 PatriciaView.prototype.initStage = function(cont) {
@@ -89,7 +91,11 @@ PatriciaView.prototype.draw = function() {
       recursiveTraversalLevel(node.children[j], level);
     }
   }*/
-
+    var h = 420;
+    if (this.scale > 1.1)
+      h *= this.scale;
+      this.stage.setHeight(h);
+     
   // calculate x and y position of every node
   function recursiveTraversalPosition(node, childShift) {
 

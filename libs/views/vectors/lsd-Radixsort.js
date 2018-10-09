@@ -44,7 +44,9 @@ VectorView.prototype.draw = function()
 
     var w = ((2 + this.model.column) * rect_size + stroke_width * 2) * 2;
     var h = (this.model.rows * rect_size + stroke_width * 2) + 2 * rect_size;
-
+    
+    if(h < 435)
+       h = 435;
     this.stage.setHeight(h);
     this.stage.setWidth(w);
     this.stage.removeChildren();

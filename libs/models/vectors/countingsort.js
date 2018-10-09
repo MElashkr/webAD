@@ -251,7 +251,14 @@ Vector.prototype.clearArrows = function(){
 //----- Value Functions -----
 
 Vector.prototype.getElementsByPrompt = function(){
-    var valueInString = prompt("Please enter the elements (separated by space):\nValues > 45 are ignored");
+    // var valueInString = prompt("Please enter the elements (separated by space):\nValues > 45 are ignored");
+    var promptMessage = "Please enter the elements (separated by space):\nValues > 45 are ignored"; 
+    var mode = "add";
+    var valueInString = validInput(mode, promptMessage, null);
+    
+    if (valueInString === null){
+        return;
+    }
     
     if(valueInString) {
         this.init();
@@ -273,6 +280,63 @@ Vector.prototype.getElementsByPrompt = function(){
     }
     return false;
 }
+
+function validInput(mode, promptMessage, valueInString){
+		var dataToValid;
+		if (mode === "edit"){
+            dataToValid = prompt(promptMessage, valueInString);
+        }else if("add"){
+            dataToValid = prompt(promptMessage);
+        }
+        
+        data = dataToValid;
+			do{
+				var isNewvalNotValid = false;
+				if (dataToValid === null)
+					return null;
+					
+				if (/\s/.test(dataToValid)) {
+   					 var dataArray = dataToValid.split(' ');
+						for (var i = 0; i<dataArray.length; i++){
+							if (isNaN(dataArray[i])){
+								alert("Value ("+ dataArray[i]+ ") not allowed. Please enter a number");
+								isNewvalNotValid = true;
+								break;
+							}else if (dataArray[i] > 45){
+								alert("Value not allowed. Please enter a number less than 45");
+								isNewvalNotValid = true;
+								break;
+							}
+						}
+				}else {
+					dataToValid = parseInt(dataToValid);
+					
+					
+					if (isNaN(dataToValid))
+					{
+						alert("Value not allowed. Please enter a number");
+						isNewvalNotValid = true;
+					}else if (dataToValid > 45){
+						alert("Value not allowed. Please enter a number less than 45");
+						isNewvalNotValid = true;
+					}
+				}
+				
+				if (isNewvalNotValid){
+					if (mode === "edit"){
+                        dataToValid = prompt(promptMessage, valueInString);
+                    }else if("add"){
+                        dataToValid = prompt(promptMessage);
+                    } 
+					data = dataToValid;
+				}
+					
+				
+			}while(isNewvalNotValid);
+			
+			return data;
+}
+
 Vector.prototype.setRandomElements = function(){
     var valueInString = prompt("Please enter the number of values and the highest possible value (separated by space):\nValues > 45 are ignored");
     
@@ -303,7 +367,9 @@ Vector.prototype.editElements = function(){
     }
     valueInString = valueInString.substring(0, (valueInString.length - 1));
     
-    var newValueInString = prompt("Add new values or delete/edit existing ones\nValues > 45 are ignored", valueInString);
+    var promptMessage = "Add new values or delete/edit existing ones\nValues > 45 are ignored";
+    var mode = "edit";
+    var newValueInString = validInput(mode, promptMessage, valueInString);
     
     if(newValueInString && !(newValueInString == valueInString)) {
         this.init();

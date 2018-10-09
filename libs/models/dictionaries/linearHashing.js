@@ -34,11 +34,21 @@ function LinearHashing(){
 }
 
 LinearHashing.prototype.init=function(){
-
-	var b=parseInt(prompt("Bucket size:\n(>0)"));
-	var d=parseInt(prompt("D:\n(>0)"));
+	var mode = "init";
+	var promptMessage1 = "Bucket size:\n(>0)";
+	var b = validInput(mode, 1, promptMessage1);
 	
-	if(isNaN(b)||isNaN(d)||b<1||d<1)return;
+	if(b === null){
+		return;
+	}
+	
+	var promptMessage2 = "D:\n(>0)";
+	var d = validInput(mode, 1, promptMessage2);
+	
+	if (d === null){
+		return;
+	}
+	
 	this.d=d;
 	this.b=b;
 	
@@ -220,10 +230,43 @@ function decbin(dec,length){
 	return out;  
 }
 
+function validInput(mode,validAmount, promptMessage){
+	var newVal;
+	do{
+		newVal = (prompt(promptMessage));
+		if (newVal === null)
+			return null;
+		
+		newVal = parseInt(newVal);
+		var isNewvalNotValid = false;
+		
+		if (isNaN(newVal))
+		{
+			alert("Value not allowed. Please enter a number");
+			isNewvalNotValid = true;
+		}else if (newVal > validAmount && (mode === "create" || mode === "remove" || mode === "search")){
+			alert("Value not allowed. Please enter a number less than" + validAmount);
+			isNewvalNotValid = true;
+		}else if (newVal < validAmount && mode === "init"){
+			alert("Value not allowed. Please enter a number bigger than " + 0);
+			isNewvalNotValid = true;
+		}
+		
+	}while(isNewvalNotValid);
+	return newVal;
+}
+
 LinearHashing.prototype.add=function(){
 	if(this.rows.length>0){
-		var newVal=parseInt(prompt("Add:\n (values > 99999 are ignored)"));
-		if(isNaN(newVal)||newVal>99999)return;
+		var validAmount = 99999;
+		var mode = "add";
+		var promptMessage = "Add:\n (values > 99999 are ignored)";
+		var newVal = validInput(mode, validAmont, promptMessage);
+		
+		if (newVal === null){
+			return;
+		}
+		
 		this.working=true;
 		this.manipulationInProgress=false;
 		this.newBlockVals=[];
@@ -400,8 +443,12 @@ LinearHashing.prototype.add=function(){
 
 LinearHashing.prototype.remove=function(){
 	if(this.rows.length>0){
-		var remVal=parseInt(prompt("Remove:"));
-		if(isNaN(remVal))return;
+		var promptMessage = "Remove:";
+		var remVal = validInput(promptMessage);
+		
+		if (remVal === null){
+			return;
+		}
 		
 		this.working=true;
 		var a_bin=decbin(remVal,this.d);
@@ -535,8 +582,13 @@ LinearHashing.prototype.remove=function(){
 
 LinearHashing.prototype.search=function(){
 	if(this.rows.length>0){
-		var searchVal=parseInt(prompt("Search for:"));
-		if(isNaN(searchVal))return;
+		
+		var promptMessage = "Search for:";
+		var searchVal = validInput(promptMessage);
+		
+		if (searchVal === null){
+			return;
+		}
 		
 		var a_bin=decbin(searchVal,this.d);
 		var a_dec=parseInt(a_bin,2);

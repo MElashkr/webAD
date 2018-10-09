@@ -1,29 +1,87 @@
 <!DOCTYPE html>
-<head>
-  <meta charset="UTF-8">
-  <title>webAD</title>
-  <meta name="description" content="">
-  <meta name="keywords" content="">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  
-  <link rel="stylesheet" href="../../styles/style.css" type="text/css" media="all">
-  <link rel="stylesheet" href="../../styles/img.css" type="text/css" media="all">
-  
-  <script src="../../libs/externalLibs/jquery.min.js"></script>
-  <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
-  
-  <script type="text/javascript" src="../../libs/menu.js"></script>
-  <script src="./unweightedUndirectedMatrix.js"></script>
-  <script src="./unweightedDirectedMatrix.js"></script>
+<html lang="en">
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<!-- Chrome, Firefox OS and Opera -->
+<meta name="theme-color" content="#0063A6">
+<!-- Windows Phone -->
+<meta name="msapplication-navbutton-color" content="#0063A6">
+<!-- iOS Safari -->
+<meta name="apple-mobile-web-app-status-bar-style" content="#0063A6">
 
-  <script src="../../libs/views/graphs/unweightedUndirected.js"></script>
-  <script src="../../libs/models/graphs/unweightedUndirected.js"></script>
-  <script src="../../libs/views/graphs/unweightedDirected.js"></script>
-  <script src="../../libs/models/graphs/unweightedDirected.js"></script>
+<!--[if !IE]><!-->
+<title>WebAD 2.0 &#9829; </title>
+<!--<![endif]-->
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<!-- Chrome, Firefox OS and Opera -->
+	<meta name="theme-color" content="#0063A6">
+	<!-- Windows Phone -->
+	<meta name="msapplication-navbutton-color" content="#0063A6">
+	<!-- iOS Safari -->
+	<meta name="apple-mobile-web-app-status-bar-style" content="#0063A6">
+
+	<!-- BEGIN WEBAD STYLES -->
+	<link href="../../styles/imgRD.css" rel="stylesheet" type="text/css" />
+	<link href="../../styles/styleRD.css" rel="stylesheet" type="text/css" />
+	<!-- END WEBAD STYLES -->
+	<link href="../../layout/assets/global/css/components-md.css" id="style_components" rel="stylesheet" type="text/css" />
+	<link href="../../layout/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+	<link href="../../layout/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+	<link href="../../layout/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"
+		media="screen" />
+
+	<!-- BEGIN THEME LAYOUT STYLES -->
+	<link href="../../layout/css/layout.min.css" rel="stylesheet" type="text/css" />
+	<link href="../../layout/css/themes/blue-steel.min.css" rel="stylesheet" type="text/css" />
+	<!-- END THEME LAYOUT STYLES -->
+	<link href="../../layout/css/adaptResponsive.css" rel="stylesheet" type="text/css" />
+
+	<script src="../../layout/Jquery/js/Framework/jquery-1.11.0.min.js"></script>
+	<script src="../../layout/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+	<script src="../../layout/Jquery/js/UI/jquery-ui-1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+
+	<script src="../../layout/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js" type="text/javascript"></script>
+
+	<script src="../../layout/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js" type="text/javascript"></script>
+	<!-- <%--fancybox helpers--%> -->
+
+	<!-- BEGIN THEME GLOBAL SCRIPTS -->
+	<script src="../../layout/assets/global/scripts/app.min.js" type="text/javascript"></script>
+	<!-- END THEME GLOBAL SCRIPTS -->
+	<!-- BEGIN THEME LAYOUT SCRIPTS -->
+	<script src="../../layout/assets/scripts/layout.min.js" type="text/javascript"></script>
+	<script src="../../layout/assets/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
+	<!-- END THEME LAYOUT SCRIPTS -->
+
+	<script src="../../layout/assets/scripts/resize-container.js" type="text/javascript"></script>
+	<script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
+	<script src="./unweightedUndirectedMatrix.js"></script>
+	<script src="./unweightedDirectedMatrix.js"></script>
+
+	<script src="../../libs/views/graphs/unweightedUndirected.js"></script>
+	<script src="../../libs/models/graphs/unweightedUndirected.js"></script>
+	<script src="../../libs/views/graphs/unweightedDirected.js"></script>
+	<script src="../../libs/models/graphs/unweightedDirected.js"></script>
+	<!-- END JAVASCRIPTS -->
+
+	<!-- Mobile View-->
+	<meta name="viewport" content="user-scalable=yes, width=device-width, initial-scale=1.0" />
+
+	<meta name="distribution" content="global">
+	<meta name="rating" content="general">
+	<meta name="author" content="WebAD">
+	<meta name="publisher" content="WebAD">
+	<meta name="copyright" content="© WebAD Team 2017">
+
+	<meta name="resource-type" content="document">
+	<meta name="application-name" content="WebAD">
+	<meta name="msapplication-tooltip" content="WebAD Website">
+	<meta name="msapplication-window" content="width=1024;height=768">
 </head>
 
 <script>
-	
 	var _matrix=undefined;
 	var graph=undefined;
 	var directed=false;
@@ -38,7 +96,7 @@
 		}
 		
 		directed=$('#directed')[0].checked;
-
+		
 		if(!directed)
 			graph=new UnweightedUndirectedGraph();
 		else
@@ -48,6 +106,29 @@
 			_matrix.stageMin.removeChildren();
 			_matrix=undefined;
 		}
+        resetFields();
+		
+	}
+	
+	function validInput(promptMessage){
+		var valueToValid;
+		do{
+					valueToValid = (prompt(promptMessage));
+					if (valueToValid === null)
+						return null;
+					
+					valueToValid = parseInt(valueToValid);
+					var isNewvalNotValid = false;
+					
+					if (isNaN(valueToValid) || valueToValid<0)
+					{
+						alert("Value not allowed. Please enter a number");
+						isNewvalNotValid = true;
+					}
+					
+				}while(isNewvalNotValid);
+		
+		return valueToValid;
 	}
 	
 	function add(){
@@ -59,8 +140,11 @@
 				var check=confirm("Insert new nodes? (Matrix contains "+amount+" nodes now)");
 				
 				if(check){
-					newamount=parseInt(prompt("Amount of new nodes:"));
-					if(isNaN(newamount)||newamount<0)return;
+					var promptMessage = "Amount of new nodes:";
+					newamount = validInput(promptMessage);
+					if (newamount === null){
+			          return;
+		            }
 				}
 				
 				var oldM=_matrix.miniMatrix.slice();
@@ -87,7 +171,7 @@
 				var tf = $("#startNode");
 				tf.val(""+graph.startNode+"");
 				tf.css("background-color","white");
-				_class('createMatrix', 'hide');
+			$('#createMatrix').modal('show');
 			}
 			else
 				window.alert("Algorithm already in progress");
@@ -190,6 +274,7 @@
 			_matrix.minNum=amount;
 			_matrix.drawMin();
 		}
+		changeTextToPlayModus(true);
 	}
 	
 	function example(){
@@ -225,8 +310,12 @@
 	}
 	
 	function create(){
-		var amount=parseInt(prompt("Amount of nodes:"));
-		if(isNaN(amount)||amount<1)return;
+		var promptMessage = "Amount of nodes:";
+		var amount = validInput(promptMessage);
+		
+		if (amount === null){
+			return;
+		}
 		
 		//prevent deletion of mini matrix due to object overwrite
 		var oldM=undefined;
@@ -253,7 +342,7 @@
 		var tf = $("#startNode");
 		tf.val("");
 		tf.css("background-color","white");
-		_class('createMatrix', 'hide');
+		$('#createMatrix').modal('show');
 	}
 	
 	function createOk(){
@@ -261,7 +350,7 @@
 		var startNode=parseInt(tf.val());
 
 		if(isNaN(startNode)||startNode<0||startNode>_matrix.number-1){
-			tf.css("background-color","orange");
+			tf.css("background-color","#f0ad4e"); //orange
 			window.alert("Invalid initial node. It must be between 0 and "+(_matrix.number-1));
 			return;
 		}
@@ -304,7 +393,7 @@
 				clearTimes();
 				elem.removeClass("p1");
 			}
-			_class('createMatrix', 'hide');
+			$('#createMatrix').modal('hide');
 			var c1 = $('#container1')[0];
 			graph.fill(_matrix.matrix,startNode);
 			graph.init(c1);
@@ -330,6 +419,7 @@
 			clearTimes();
 			var elem = $("#p");
 			elem.addClass("p1");
+			changeTextToPlayModus(false);
 			graph.bfs();
 		}
 		else{
@@ -355,16 +445,27 @@
 			if(elem.hasClass("p1")){
 				clearTimes();
 				elem.removeClass("p1");
+				changeTextToPlayModus(true);
 			}
 			else{
 				graph.bfs(); 
 				elem.addClass("p1");
+				changeTextToPlayModus(false);
 			}
-			
 		}
 		else
 			alert("No graph created!");
 	}
+	
+	function changeTextToPlayModus(isPlayModus){
+         var btnElement = document.getElementById("p");        
+         var iconElement = document.getElementById("iconPlayPause");
+        if(isPlayModus){
+            btnElement.innerHTML = " <i class='fa fa-play-circle-o fa-lg'></i> Play"
+        }else {
+              btnElement.innerHTML = " <i class='fa fa-pause fa-lg'></i> Stop"
+        }
+    }
 	
 	function pre(){
 		var elem = $("#p");
@@ -378,6 +479,8 @@
 		_matrix.minNum=graph.costMatrix.length;
 		_matrix.miniMatrix=graph.costMatrix;
 		_matrix.drawMin();
+		
+		resetFields();
 	}
 	
 	function next(){
@@ -385,13 +488,22 @@
 		if(elem.hasClass("p1")){
 			clearTimes();
 			elem.removeClass("p1");
+			changeTextToPlayModus(true);
 		}
+		
+		if (graph.speed === 0) // running and manual speed
+		{
+			graph.bfs(); 
+		}else {
 		clearTimes();
 		graph.next();
 		//mini display
 		_matrix.minNum=graph.costMatrix.length;
 		_matrix.miniMatrix=graph.costMatrix;
 		_matrix.drawMin();
+		}
+        
+		resetFields();
 	}
 	
 	function first(){
@@ -422,160 +534,327 @@
 		_matrix.drawMin();
 	}
 	
+	function speed() {
+        if (graph != undefined) {
+            var sp = $("#speed");
+            graph.speed = parseInt(sp.val());
+        } else {
+            alert("No graph created !");
+            resetFields();
+        }
+    }
+	
+	function resetFields(){
+		var sp =$("#speed");
+		sp.val(graph.speed);
+	}
+	
+	 function speed(){
+		if(graph !=undefined){
+			var sp = $("#speed");
+			var speedv = parseInt(sp.val());
+			if(speedv >=0 && speedv <=10){
+				graph.speed = speedv;
+				document.getElementById('alertbox').style.visibility='hidden';
+			}
+			
+			if(speedv===0){
+                 document.getElementById('alertbox').style.visibility='visible';
+                $('#alertbox').addClass('alert-box2-manuel').removeClass(' col-md-5 alert-box-manuel');
+                $('#alertbox').text('Manuel Mode');
+			}else if(speedv > 10){
+                $('#alertbox').addClass('col-md-5 alert-box-manuel').removeClass('col-md-3 alert-box2-manuel');
+                $('#alertbox').text('Allowed values from 0 to 10.');
+                 document.getElementById('alertbox').style.visibility='visible';
+            }else{
+                document.getElementById('alertbox').style.visibility='hidden';
+            }
+		}
+		else{
+			alert("No graph created 1!");
+			resetFields();
+		}
+	}
+
 </script>
 
-<body id="body" class="page" onload="_create();example();">
-<header id="header">
-	<ul>
-		<li><a href="javascript:_class('info', 'hide')" class="info">Info</a></li>
-		<li><a href="javascript:_class('config', 'hide')" class="conf">Config</a></li>
-		<li><a href="javascript:_class('about', 'hide')" class="idea">About</a></li>
-	</ul>
-</header>
-<aside>
-	<a href="../index.html" class="logo"></a>
-	<ul class="dis">
-		<li><a href="javascript:_class('vec', 'hide')" class="v"><span>Vectors</span></a></li>
-		<li><a href="javascript:_class('dic', 'hide')" class="d"><span>Dictionaries</span></a></li>
-		<li><a href="javascript:_class('lis', 'hide')" class="l"><span>Lists</span></a></li>
-		<li><a href="javascript:_class('gra', 'hide')" class="g"><span>Graphs</span></a></li>
-		<li><a href="javascript:_class('tre', 'hide')" class="t"><span>Trees</span></a></li>
-	</ul>
-</aside>
-<article>
-	<div id="menu" class="open">
-		<a href="javascript:_class('menu', 'open')">Breadth First Search</a>
-        <input type="button" value="Create" id="create" onclick="create();return false;">
-        <input type="button" value="Modify nodes" id="add" onclick="add();return false;">
-        <input type="button" value="Random" id="random" onclick="random();return false;">
-        <input type="button" value="Run BFS" id="bfs" onclick="bfs();return false;">
-        <div id="containerMatrixMini"></div>
-	</div>
-	<div id="container1"></div>
-</article>
-<footer>
-	<div class="rul">
-		<a href="#" class="l2" id="first" onclick="first();return false;"></a>
-		<a href="#" class="l1" id="prev" onclick="pre();return false;"></a>
-		<a href="#" id="p" onclick="un_pause();return false;"></a>
-		<a href="#" class="r1" id="next" onclick="next();return false;"></a>
-		<a href="#" class="r2" id="last" onclick="last();return false;"></a>
-		<a href="#" class="z2" onclick="zoomOut();return false;"></a>
-		<a href="#" class="z1" onclick="zoomIn();return false;"></a>
-	</div>
-	webAD is a web-based system designed for simple and intuitive learning of Algorithms and Datastrures. For further questions please contact: <a href="mailto:begy.volodimir@gmail.com">begy.volodimir@gmail.com</a>
-</footer>
-<div id="info" class="popup hide"><div class="closer" onclick="javascript:_class('info', 'hide')"></div><a href="javascript:_class('info', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Info</h2>
-	Breadth-first search (BFS) is an algorithm for traversing or searching tree or graph data structures. It starts at the tree root (or some arbitrary node of a graph, 
-	sometimes referred to as a 'search key') and explores the neighbor nodes first, before moving to the next level neighbors. Compare BFS with the equivalent, but more
-	memory-efficient Iterative deepening depth-first search and contrast with depth-first search.
-	<br>
-	<img src="../../images/animbfs.gif" width="200px" alt="bsimage"><br>
-	BFS was invented in the late 1950s by E. F. Moore, who used it to find the shortest path out of a maze, and discovered independently by C. Y. Lee as a wire routing algorithm (published 1961).
-	<h4>Pseudocode</h4>
-	Input: A graph <b>G</b> and a vertex <b>v</b> of <b>G</b><br>
-	Output: All vertices reachable from <b>v</b> labeled as discovered<br>
-	A non-recursive implementation of BFS:<br>
-	<img src="../../images/pseudobfs.png" width="500px" alt="bsimage">[22]
-	<br><br>
-	<div>[22]: <a href="https://en.wikipedia.org/wiki/Breadth-first_search" target="_blank">https://en.wikipedia.org/wiki/Breadth-first_search</a></div>
-	</div>
-</div>
-<div id="config" class="popup hide"><div class="closer" onclick="javascript:_class('config', 'hide')"></div><a href="javascript:_class('config', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Config</h2>
-		Directed: <input type="checkbox" name="directed" id="directed" onchange="_create();">
-	</div>
-</div>
-<div id="about" class="popup hide"><div class="closer" onclick="javascript:_class('about', 'hide')"></div><a href="javascript:_class('about', 'hide')" class="close">X</a>
-	<div class="pole2"><h2>About</h2>
-		<a href="http://gruppe.wst.univie.ac.at/workgroups/webAD" target="_blank">
-			<img src="../../images/uni.png" width="250px" alt="bsimage">
-		</a>
-		<a href="https://github.com/VolodimirBegy/webAD" target="_blank">
-			<img src="../../images/Octocat.png" width="100px" alt="bsimage">
-		</a>
-	</div>
-</div>
+<body class="page-container-bg-solid page-md" style="background: #eff3f8;" onload="_create();example();">
+	<div class="page-container">
+		<div class="page-content-wrapper">
+			<div class="page-header navbar-white" style="background: #eff3f8; height: fit-content;">
+				<!-- BEGIN HEADER MENU -->
+				<div class="page-header-menu navbar-white">
+					<div class="container navbar-white">
+						<div class="hor-menu  hor-menu-light">
+							<div id="navPlaceholder">
+								<script src="../../layout/assets/global/scripts/nav-menu.js" type="text/javascript"></script>
+							</div>
+						</div>
+						<!-- END MEGA MENU -->
+					</div>
+				</div>
+				<!-- END HEADER MENU -->
+				<!-- <%--Top Header--%> -->
+				<div id="logo_minDevice" class="page-header-top">
+					<div class="container">
+						<div class="page-logo" style="/*width: 400px!important; */height: auto;">
+							<div class="row">
+								<div class="col-md-11">
+								</div>
+								 <a href="../home/index.html" >
+                                   <div class="col-md-1 logo logo-margin-top">                                    
+                                   </div>
+                                </a>
+							</div>
+						</div>
+						<a href="javascript:;" class="menu-toggler"></a>
+						<div class="top-menu">
 
+						</div>
+					</div>
+					<div class="container pull-center">
+					</div>
+				</div>
+				<!-- end top header -->
 
-<div id="vec" class="popup hide"><div class="closer" onclick="javascript:_class('vec', 'hide')"></div><a href="javascript:_class('vec', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Vectors</h2>
-     	<ul>
-			<li><a href="../vectors/BubbleSort.html">Bubble Sort</a></li>
-			<li><a href="../vectors/SelectionSort.html">Selection Sort</a></li>
-			<li><a href="../vectors/MergeSort.html">Merge Sort</a></li>
-			<li><a href="../vectors/QuickSort.html">Quick Sort</a></li>
-			<li><a href="../vectors/RadixSort.html">LSD Radix Sort</a></li>
-			<li><a href="../vectors/BucketSort.html">Bucket Sort</a></li>
-			<li><a href="../vectors/CountingSort.html">Counting Sort</a></li>
-			<li><a href="../vectors/BinaryQuickSort.html">Binary Quicksort</a></li>
-			<li><a href="../vectors/BalancedMultiwayMerging.html">Balanced Multiway Merging</a></li>
-        </ul>
-	</div>
-</div>
-<div id="dic" class="popup hide"><div class="closer" onclick="javascript:_class('dic', 'hide')"></div><a href="javascript:_class('dic', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Dictionaries</h2>
-       	<ul>
-              <li><a href="../dictionaries/DoubleHashing.html">Double Hashing</a></li>
-              <li><a href="../dictionaries/LinearProbing.html">Linear Probing</a></li>
-              <li><a href="../dictionaries/LinearHashing.html">Linear Hashing</a></li>
-              <li><a href="../dictionaries/SeparateChaining.html">SeparateChaining</a></li>
-              <li><a href="../dictionaries/ExtendibleHashing.html">Extendible Hashing</a></li>
-              <li><a href="../dictionaries/Biseh.html">BISEH</a></li>
-        </ul>
-	</div>
-</div>
-<div id="lis" class="popup hide"><div class="closer" onclick="javascript:_class('lis', 'hide')"></div><a href="javascript:_class('lis', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Lists</h2>
-     	<ul>
-             	<li>Coming soon</li>
-          </ul>
-	</div>
-</div>
-<div id="gra" class="popup hide"><div class="closer" onclick="javascript:_class('gra', 'hide')"></div><a href="javascript:_class('gra', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Graphs</h2>
-     	<ul>
-			<li><a href="../graphs/bfs.html">Breadth First Search</a></li>
-			<li><a href="../graphs/dfs.html">Depth First Search</a></li>
-			<li><a href="../graphs/kruskal.html">Kruskal</a></li>
-			<li><a href="../graphs/dijkstra.html">Dijkstra</a></li>
-              <li><a href="../graphs/prim.html">Prim</a></li>
-			<li><a href="../graphs/topo.html">Topologial Sort</a></li>
-			<li><a href="../graphs/floydwarshall.html">Floyd-Warshall</a></li>
-        </ul>
-	</div>
-</div>
-<div id="tre" class="popup hide"><div class="closer" onclick="javascript:_class('tre', 'hide')"></div><a href="javascript:_class('tre', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Trees</h2>
-	     <ul>
-			<li><a href="../trees/bst.html">Binary Search Tree</a></li>
-			<li><a href="../trees/bplus1.html">B+ Tree 1</a></li>
-			<li><a href="../trees/bplus2.html">B+ Tree 2</a></li>
-			<li><a href="../trees/heap.html">Binary Heap</a></li>
-			<li><a href="../trees/heapSort.html">Heap Sort</a></li>
-              <li><a href="../trees/trie.html">Trie</a>
-                <ul>
-                  <li><a href="../trees/trie.html?type=patricia">PATRICIA</a></li>
-                  <li><a href="../trees/trie.html?type=briandais">De la Briandais</a></li>
-                </ul>
-              </li>
-			<li><a href="../trees/traversal.html">Traversal</a></li>
-			<li><a href="../trees/TwoThreeFour.html">2-3-4 Tree</a></li>
-          </ul>
-	</div>
-</div>
-<!-- for the create matrix: -->
-<div id="createMatrix" class="popup hide"><div class="closer" onclick="javascript:_class('createMatrix', 'hide')"></div><a href="javascript:_class('createMatrix', 'hide')" class="close">X</a>
-	<div class="pole"><h2>Tick the fields in the matrix:</h2>
-		<div id="containerMatrix"></div>
-		<div class="rul">
-			<a href="#" class="z2" style="width:7%;height:50%;" onclick="zoomOutMatrix();return false;"></a>
-			<a href="#" class="z1" style="width:7%;height:50%;" onclick="zoomInMatrix();return false;"></a>	
+			</div>
+			<!-- END HEADER MENU -->
+			<!-- <%--content--%> -->
+			<div class="page-content" style="padding-top: 0;">
+				<div class="container">
+				</div>
+				<div class="container">
+
+					<div class="page-content-inner inner-conent-padding-top" style="background:white">
+						<!-- Conent WEB AD -->
+						<div class="tab-pane active" id="form_1">
+							<div class="portlet box blue">
+								<div class="portlet-title">
+									<div class="caption">
+										<i class="fa fa-gift"></i>Breadth First Search</div>
+									<div class="tools">
+										<a href="javascript:;" class="collapse" data-original-title="" title=""> </a>
+										<a href="#" data-toggle="modal" data-target="#modalConfig" class="fa fa-wrench" title="Configuration" style="color:white"></a>
+										<a href="#" data-toggle="modal" data-target="#modalInfo" class="fa fa-info-circle" title="Information" style="color:white"></a>
+									</div>
+								</div>
+								<div class="portlet-body form" style="display: block;">
+									<!-- BEGIN FORM-->
+									<div class="form-body">
+										<!--/row-->
+										<div class="row" id="options_desktop">
+											<div class="col-md-1">
+												<button type="button" class="btn blue disabled">Options</button>
+											</div>
+											<div class="col-md-10">
+												<button type="button" class="btn blue btn-outline" id="create" onclick="create();return false;"></i>Create</button>
+												<button type="button" class="btn blue btn-outline" id="add" onclick="add();return false;"></i>Modify nodes</button>
+												<button type="button" class="btn blue btn-outline" id="random" onclick="random();return false;"></i>Random</button>
+												<button type="button" class="btn blue btn-outline" id="bfs" onclick="bfs();return false;"></i>Run BFS</button>
+											</div>
+										</div>
+										<!--/row-->
+										<div class="row" id="options_minDevice">
+											<div class="col-md-12">
+												<div class="dropdown">
+													<button class="btn blue dropdown-toggle" type="button" data-toggle="dropdown">Options
+                                                        <span class="caret"></span></button>
+													<ul class="dropdown-menu">
+														<li><button type="button" class="btn blue btn-outline btn-block" id="create" onclick="create();return false;"></i>Create</button></li>
+														<li><button type="button" class="btn blue btn-outline btn-block" id="add" onclick="add();return false;"></i>Modify nodes</button></li>
+														<li><button type="button" class="btn blue btn-outline btn-block" id="random" onclick="random();return false;"></i>Random</button></li>
+														<li><button type="button" class="btn blue btn-outline btn-block" id="bfs" onclick="bfs();return false;"></i>Run BFS</button></li>
+													</ul>
+												</div>
+											</div>
+										</div>
+
+										<div class="row">
+											<div id="container1" class="col-md-9 inner-content-container1">
+											</div>
+											<div class="col-md-3 padding-top-10" style="overflow:auto;">
+												<a href="javascript:;" class="text-blue" data-toggle="collapse" data-target="#containerMatrixMini">Matrix view</a>
+												<div id="containerMatrixMini" class="collapse in">
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="form-actions right">
+										<div class="row">
+											<div class="col-md-1">
+											</div>
+											<div class="col-md-6 text-center">
+												<button type="button" class="btn blue" id="first" onclick="first();return false;">
+                                            <i class="fa fa-fast-backward fa-lg"></i><span class="btn-recorder">First</span></button>
+												<button type="button" class="btn blue" id="prev" onclick="pre();return false;">
+                                            <i class="fa fa-backward fa-lg"></i><span class="btn-recorder">Previous</span></button>
+												<button type="button" class="btn blue" id="p" onclick="un_pause();return false;">
+                                            <i id="iconPlayPause" class="fa fa-play-circle-o fa-lg"></i><span class="btn-recorder">Play</span></button>
+												<button type="button" class="btn blue" id="next" onclick="next();return false;">
+                                            <i class="fa fa-forward fa-lg"></i><span class="btn-recorder">Next</span></button>
+												<button type="button" class="btn blue" id="last" onclick="last();return false;">
+                                            <i class="fa fa-fast-forward fa-lg"></i><span class="btn-recorder">Last</span></button>
+											</div>
+											<div class="col-md-1">
+											</div>
+											<div class="col-md-4 text-center">
+												<button type="button" class="btn green" onclick="zoomOut();return false;">
+                                            <i class="fa fa-search-minus fa-lg"></i><span class="btn-zoom">Zoom Out</span></button>
+												<button type="button" class="btn green" onclick="zoomIn();return false;">
+                                            <i class="fa fa-search-plus fa-lg"></i><span class="btn-zoom">Zoom In</span></button>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!-- END FORM-->
+							</div>
+						</div>
+
+					</div>
+					<div class="footer">
+						<div class="container">
+							webAD is a web-based system designed for simple and intuitive learning of Algorithms and Datastrures.
+						    For further questions please contact:
+							<a href="mailto:begy.volodimir@gmail.com">begy.volodimir@gmail.com</a>
+						</div>
+						<div id="return-to-top" class="scroll-to-top" title="return to top">
+							<i id="top-arrow"></i>
+						</div>
+					</div>
+				</div>
+			</div>
 		</div>
-		Initial Node:<input type="text" id="startNode" style="width:20px"><br><br>
-       	<a href="#" id="createOk" style='font-size:25px;text-decoration: none;color:red;background:lime;box-shadow:inset 0px 2px 10px white, 0 0 5px silver' onclick="createOk();">Create</a>
 	</div>
-</div>
+
+	<!-- BEGIN MODAL -->
+	<div id="modalInfo" class="modal fade" role="dialog" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Info</h4>
+				</div>
+				<div class="modal-body">
+					<p>
+						Breadth-first search (BFS) is an algorithm for traversing or searching tree or graph data structures. It starts at the tree
+						root (or some arbitrary node of a graph, sometimes referred to as a 'search key') and explores the neighbor nodes first,
+						before moving to the next level neighbors. Compare BFS with the equivalent, but more memory-efficient Iterative deepening
+						depth-first search and contrast with depth-first search.
+						<br>
+						<img src="../../images/animbfs.gif" width="60%" alt="bsimage"><br> BFS was invented in the late 1950s by E. F. Moore,
+						who used it to find the shortest path out of a maze, and discovered independently by C. Y. Lee as a wire routing algorithm
+						(published 1961).
+						<h4>Pseudocode</h4> Input: A graph <b>G</b> and a vertex <b>v</b> of <b>G</b><br> Output: All vertices reachable from <b>v</b> labeled
+						as discovered<br> A non-recursive implementation of BFS:<br>
+						<img src="../../images/pseudobfs.png" width="100%" alt="bsimage">[22]
+						<br><br>
+						<div>[22]: <a href="https://en.wikipedia.org/wiki/Breadth-first_search" target="_blank">https://en.wikipedia.org/wiki/Breadth-first_search</a></div>
+					</p>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END MOAL -->
+	<!-- BEGIN MODAL -->
+	<div id="modalConfig" class="modal fade" role="dialog" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Config</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div class="col-md-7">
+							<div class="form-group">
+								<label class="control-label col-md-6">Animation speed:</label>
+								<div class="col-md-6">
+									<input type="number" class="input-control" name="speed" style="width:40px" id="speed" min="0" max="10" step="1" value="5"
+										onchange="speed();return false;">
+								</div>
+							</div>
+						</div>
+						<label id="alertbox" class="control-label col-md-5 alert-box-manuel" style="margin-top:5px;"></label>
+					</div>
+					<div class="row">
+						<div class="col-md-9">
+							<div class="form-group">
+								<label class="control-label col-md-5" style="margin-top:7px;">Directed:</label>
+								<div class="col-md-7">
+									<input type="checkbox" class="input-control" name="col1" id="directed" onchange="_create();return false;">
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3">
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END MOAL -->
+	<!-- BEGIN MODAL -->
+	<div id="createMatrix" class="modal fade" role="dialog" aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<!-- Modal content-->
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">Tick the fields in the matrix</h4>
+				</div>
+				<div class="modal-body">
+					<div class="row">
+						<div id="containerMatrix" class="col-md-12" style="overflow:auto;">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-3">
+							<button type="button" class="btn green" onclick="zoomOutMatrix();return false;">
+                                            <i class="fa fa-search-minus fa-lg"></i>Zoom Out</button>
+						</div>
+						<div class="col-md-3">
+							<button type="button" class="btn green" onclick="zoomInMatrix();return false;">
+                                            <i class="fa fa-search-plus fa-lg"></i>Zoom In</button>
+						</div>
+						<div class="col-md-6">
+						</div>
+					</div>
+					<div class="row" style="padding-top:4px">
+						<div class="col-md-9">
+							<div class="form-group">
+								<label class="control-label col-md-4">Initial Mode:</label>
+								<div class="col-md-1">
+									<input type="text" class="input-control" width="30px" name="col1" id="startNode">
+								</div>
+							</div>
+							<div class="col-md-8">
+							</div>
+						</div>
+						<div class="col-md-3">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12">
+							<button type="button" class="btn blue" onclick="createOk();">
+                                            <i id="create" class="fa fa-check-circle fa-lg"></i>Create</button>
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- END MOAL -->
 </body>
+
 </html>

@@ -708,25 +708,34 @@ Biseh.prototype.getValues = function () {
     var values;
     var biseh = this;
     var returnValues = [];
-
+    var promptMessage;
+    
     switch (this.task) {
         case "Add":
-            values = prompt("Insert: \nPlease enter your Values (separated by space),\nvalues > 99999 are ignored.");
+            promptMessage = "Insert: \nPlease enter your Values (separated by space),\nvalues > 99999 are ignored.";
+            values = prompt(promptMessage);
             break;
 
         case "Remove":
-            values = prompt("Remove: \nPlease enter your Values (separated by space),\nvalues > 99999 are ignored.");
+            promptMessage = "Remove: \nPlease enter your Values (separated by space),\nvalues > 99999 are ignored.";
+            values = prompt(promptMessage);
             break;
 
         case "Search":
-            values = prompt("Search: \nPlease enter your Values (separated by space),\nvalues > 99999 are ignored.");
+            promptMessage = "Search: \nPlease enter your Values (separated by space),\nvalues > 99999 are ignored."
+            values = prompt(promptMessage);
             break;
 
         default:
             break;
     }
 
-    if (values == "" || values == null) return false;
+    values = validInput(values, promptMessage);
+    
+    if (values === null || values === undefined){
+        return false;
+    }
+    
     values = values.split(" ");
     var tempValue;
     for (var i = 0; i < values.length; i++) {
@@ -739,6 +748,49 @@ Biseh.prototype.getValues = function () {
 
     return returnValues;
 
+}
+
+function validInput(values, promptMessage) {
+	var tmpValues = values
+	
+	do{
+		var isNewvalNotValid = false;
+		var valuesToValid = tmpValues;
+		if (valuesToValid === null)
+			return;
+		
+		if (/\s/.test(valuesToValid)) {
+					var dataArray = valuesToValid.split(' ');
+					for (var i = 0; i<dataArray.length; i++){
+						if (isNaN(dataArray[i]))
+							{
+								alert("Value ("+ dataArray[i] +") not allowed. Please enter a number");
+								isNewvalNotValid = true;
+								break;
+							}else if (dataArray[i] > 100000000){
+								alert("Value not allowed. Please enter a number less than 100000000");
+								isNewvalNotValid = true;
+								break;
+							}
+					}
+			}
+			else {
+				valuesToValid = parseInt(valuesToValid);
+				if (isNaN(valuesToValid))
+					{
+						alert("Value not allowed. Please enter a number");
+						isNewvalNotValid = true;
+					}
+			}
+			
+			if (isNewvalNotValid){
+				valuesToValid = (prompt(promptMessage));
+				tmpValues = valuesToValid;
+			}
+		
+	}while(isNewvalNotValid);
+	
+	return tmpValues;
 }
 
 Biseh.prototype.savelastID = function () {
