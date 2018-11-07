@@ -156,12 +156,16 @@
 			resetFields();
 		}
 	}
-	
+
+	var isfirstManual = false;
 	function next(){
-		if(heap.speed === 0 && heap.continueAnimation){
+		
+		if(heap.speed === 0 && heap.continueAnimation
+			&& !isfirstManual){
 			heap.continueAnimation = false;
 			heap.next();
-		}else if (heap.speed === 0) // running and manual speed
+		}else if (heap.speed === 0 && !heap.continueAnimation
+		&& !isfirstManual) // running and manual speed
 		{
 			heap.timer.resume();
 			heap.continueAnimation = true;
@@ -177,6 +181,12 @@
 			}
 		}
 		resetFields();
+
+		if(isfirstManual && heap.speed == 0){
+				
+				heap.timer.resume();
+				isfirstManual = false;
+		}
 	}
 	
 	function first(){
@@ -218,6 +228,9 @@
 			}
 			
 			if(speedv===0){
+				isfirstManual = true;
+				changeTextToPlayModus(false);
+				
                  document.getElementById('alertbox').style.visibility='visible';
                 $('#alertbox').addClass('alert-box2-manuel').removeClass(' col-md-5 alert-box-manuel');
                 $('#alertbox').text('Manuel Mode');
@@ -226,6 +239,8 @@
                 $('#alertbox').text('Allowed values from 0 to 10.');
                  document.getElementById('alertbox').style.visibility='visible';
             }else{
+				isfirstManual = false;
+				changeTextToPlayModus(true);
                 document.getElementById('alertbox').style.visibility='hidden';
             }
 		}

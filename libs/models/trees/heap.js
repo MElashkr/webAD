@@ -695,6 +695,9 @@ Heap.prototype.removeMinimum = function () {
 Heap.prototype.sort = function () {
 
 	this.working = true;
+	if(heap.speed == 0){
+		heap.continueAnimation = false;
+	}
 	if (this.nodes.length == 1) {
 		function endSort(heap) {
 			heap.timer = new Timer(function () {
@@ -730,7 +733,6 @@ Heap.prototype.sort = function () {
 						heap.continueAnimation = false;
 						// alert("test");
 						heap.timer.resume();
-
 					}
 					else {
 						heap.timer.pause();
@@ -761,7 +763,6 @@ Heap.prototype.sort = function () {
 						if (heap.speed === 0) {
 							if (heap.continueAnimation === true) {
 								heap.continueAnimation = false;
-								// alert("test");
 								heap.timer.resume();
 
 							}
@@ -774,7 +775,7 @@ Heap.prototype.sort = function () {
 				}
 
 				delayedDrawing2(heap);
-			}, 1000 / heap.speed * 5);
+			}, 1000 );
 		}
 
 		function delayedDrawing2(heap) {
@@ -791,7 +792,6 @@ Heap.prototype.sort = function () {
 						if (heap.speed === 0) {
 							if (heap.continueAnimation === true) {
 								heap.continueAnimation = false;
-								// alert("test");
 								heap.timer.resume();
 
 							}
@@ -823,7 +823,7 @@ Heap.prototype.sort = function () {
 				heap.nodes.splice(heap.nodes.length - 1, 1);
 
 				delayedDrawing3(heap);
-			}, 1000 / heap.speed * 5);
+			}, 1000);
 		}
 
 		function delayedDrawing3(heap) {
@@ -836,7 +836,7 @@ Heap.prototype.sort = function () {
 					function removeNext(heap) {
 						heap.timer = new Timer(function () {
 							heap.sort();
-						}, 1000 / heap.speed * 5);
+						}, 1000);
 					}
 
 					removeNext(heap);
@@ -846,7 +846,7 @@ Heap.prototype.sort = function () {
 					actIndex = 0;
 					sink(heap);
 				}
-			}, 1000 / heap.speed * 5);
+			}, 1000 );
 		}
 		var minKidIndex = undefined;
 		function sink(heap) {
@@ -871,6 +871,7 @@ Heap.prototype.sort = function () {
 
 					if (heap.speed === 0 && !heap.continueAnimation) {
 						doStopLoop3(heap);
+						
 					}
 
 					function doStopLoop3(heap) {
@@ -878,7 +879,6 @@ Heap.prototype.sort = function () {
 							if (heap.speed === 0) {
 								if (heap.continueAnimation === true) {
 									heap.continueAnimation = false;
-									// alert("test");
 									heap.timer.resume();
 
 								}
@@ -902,6 +902,7 @@ Heap.prototype.sort = function () {
 
 					if (heap.speed === 0 && !heap.continueAnimation) {
 						doStopLoop4(heap);
+
 					}
 
 					function doStopLoop4(heap) {
@@ -909,7 +910,6 @@ Heap.prototype.sort = function () {
 							if (heap.speed === 0) {
 								if (heap.continueAnimation === true) {
 									heap.continueAnimation = false;
-									// alert("test");
 									heap.timer.resume();
 
 								}
@@ -944,7 +944,6 @@ Heap.prototype.sort = function () {
 						if (heap.speed === 0) {
 							if (heap.continueAnimation === true) {
 								heap.continueAnimation = false;
-								// alert("test");
 								heap.timer.resume();
 
 							}
@@ -968,7 +967,7 @@ Heap.prototype.sort = function () {
 
 				return;
 
-			}, 1000 / heap.speed * 5);
+			}, 1000);
 		}
 
 		function delayedDrawing5(heap) {
@@ -987,7 +986,6 @@ Heap.prototype.sort = function () {
 						if (heap.speed === 0) {
 							if (heap.continueAnimation === true) {
 								heap.continueAnimation = false;
-								// alert("test");
 								heap.timer.resume();
 
 							}
@@ -1017,7 +1015,7 @@ Heap.prototype.sort = function () {
 				else
 					sink(heap);
 
-			}, 1000 / heap.speed * 5);
+			}, 1000 );
 		}
 
 		delayedDrawing1(this);
