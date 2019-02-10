@@ -213,6 +213,7 @@ BPlusTree.prototype.lastState = function () {
 BPlusTree.prototype.add = function () {
 	
 	var val;
+	var finished = false
 	do{
 		val = (prompt("Add:\n(Values <-99 and >999 are ignored"));
 		if (val === null)
@@ -277,13 +278,13 @@ BPlusTree.prototype.add = function () {
 				actNode.color = "#FF8000";
 
 				if (tree.speed === 0)
-					alert("Click to next step.")
+					alert("Click Ok to next step.")
 
 				actNode.parent.color = "#ADFF2F";
 				tree.draw();
 				actNode.parent.neededKid = undefined;
 				if (!actNode.is_leaf) whileLoop(tree, actNode);
-
+				
 			}, 1000 / tree.speed * 5)
 		}
 		if (!actNode.is_leaf) whileLoop(tree, actNode);
@@ -405,7 +406,7 @@ BPlusTree.prototype.add = function () {
 				}
 				//the target node and its parent are both full
 				else if (actNode.keys.length == tree.order * 2 && actNode.parent != undefined && actNode.parent.keys.length == tree.order * 2) {
-					var finished = false
+					//var finished = false
 
 					var oldLeft = undefined;
 					var oldRight = undefined;
@@ -572,17 +573,14 @@ BPlusTree.prototype.add = function () {
 				}
 
 				if (tree.speed === 0)
-					alert("Click to next step.")
+					alert("Click Ok to next step.")
 
 				tree.draw();
-
 			}, steps * 1000 + (1000 / tree.speed * 5))
 		}
 
 		forLoop(this, actNode);
-
 	}
-
 }
 
 BPlusTree.prototype.removeFixed = function (val) {
@@ -1226,7 +1224,7 @@ BPlusTree.prototype.remove = function () {
 				actNode.color = "#FF8000";
 
 				if (tree.speed === 0)
-					alert("Click to next step.")
+					alert("Click Ok to next step.")
 
 				actNode.parent.color = "#ADFF2F";
 				tree.draw();
@@ -1261,7 +1259,7 @@ BPlusTree.prototype.remove = function () {
 				actNode.color = "#ADFF2F";
 
 				if (tree.speed === 0)
-					alert("Click to next step.")
+					alert("Click Ok to next step.")
 
 				//if element not there
 				//window.alert("in");
@@ -1580,7 +1578,7 @@ BPlusTree.prototype.search = function () {
 				actNode.color = "#FF8000";
 
 				if (tree.speed === 0)
-					alert("Click to next step.")
+					alert("Click Ok to next step.")
 
 				actNode.parent.color = "#ADFF2F";
 				tree.draw();
