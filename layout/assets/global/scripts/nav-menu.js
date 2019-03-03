@@ -64,7 +64,7 @@ document.getElementById("navPlaceholder").innerHTML =
 						+"			<a href='../dictionaries/LinearHashing.html'>Linear Hashing</a>"
 						+"		</li>"
 						+"		<li>"
-						+"			<a href='../dictionaries/SeparateChaining.html'>SeparateChaining</a>"
+						+"			<a href='../dictionaries/SeparateChaining.html'>Separate Chaining</a>"
 						+"		</li>"
 						+"		<li>"
 						+"			<a href='../dictionaries/ExtendibleHashing.html'>Extendible Hashing</a>"
