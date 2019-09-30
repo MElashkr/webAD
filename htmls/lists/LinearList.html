@@ -1,0 +1,1346 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+    <title>WebAD 2.0</title>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE9">
+    <!--[if IE]>
+    <p style="color:red;"><b>Internet Explorer is not supported! Please switch to another browser.</b></p>
+    <![endif]-->
+    <!-- Chrome, Firefox OS and Opera -->
+    <meta name="theme-color" content="#0063A6">
+    <!-- Windows Phone -->
+    <meta name="msapplication-navbutton-color" content="#0063A6">
+    <!-- iOS Safari -->
+    <meta name="apple-mobile-web-app-status-bar-style" content="#0063A6">
+
+    <!-- BEGIN WEBAD STYLES -->
+    <link href="../../styles/imgRD.css" rel="stylesheet" type="text/css"/>
+    <link href="../../styles/styleRD.css" rel="stylesheet" type="text/css"/>
+    <!-- END WEBAD STYLES -->
+    <link href="../../layout/assets/global/css/components-md.css" id="style_components" rel="stylesheet"
+          type="text/css"/>
+    <link href="../../layout/assets/global/plugins/font-awesome/css/font-awesome.min.css" rel="stylesheet"
+          type="text/css">
+    <link href="../../layout/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../layout/assets/global/plugins/bootstrap-switch/css/bootstrap-switch.min.css" rel="stylesheet"
+          type="text/css"
+          media="screen"/>
+
+    <!-- BEGIN THEME LAYOUT STYLES -->
+    <link href="../../layout/css/layout.min.css" rel="stylesheet" type="text/css"/>
+    <link href="../../layout/css/themes/blue-steel.min.css" rel="stylesheet" type="text/css"/>
+    <!-- END THEME LAYOUT STYLES -->
+    <link href="../../layout/css/adaptResponsive.css" rel="stylesheet" type="text/css"/>
+
+    <script src="../../layout/Jquery/js/Framework/jquery-1.11.0.min.js"></script>
+    <script src="../../layout/assets/global/plugins/bootstrap/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="../../layout/Jquery/js/UI/jquery-ui-1.11.4/jquery-ui.min.js" type="text/javascript"></script>
+
+    <script src="../../layout/assets/global/plugins/bootstrap-hover-dropdown/bootstrap-hover-dropdown.min.js"
+            type="text/javascript"></script>
+
+    <script src="../../layout/assets/global/plugins/bootstrap-switch/js/bootstrap-switch.min.js"
+            type="text/javascript"></script>
+
+    <!-- BEGIN THEME GLOBAL SCRIPTS -->
+    <script src="../../layout/assets/global/scripts/app.min.js" type="text/javascript"></script>
+    <!-- END THEME GLOBAL SCRIPTS -->
+    <!-- BEGIN THEME LAYOUT SCRIPTS -->
+    <script src="../../layout/assets/scripts/layout.min.js" type="text/javascript"></script>
+    <script src="../../layout/assets/global/scripts/quick-sidebar.min.js" type="text/javascript"></script>
+    <!-- END THEME LAYOUT SCRIPTS -->
+
+    <script src="../../layout/assets/scripts/resize-container.js" type="text/javascript"></script>
+    <script src="../../libs/externalLibs/kinetic-v5.1.0.min.js"></script>
+    <script src="../../libs/models/lists/ListContainer.js"></script>
+    <script src="../../libs/models/lists/AbstractList.js"></script>
+    <script src="../../libs/models/lists/GenericList.js"></script>
+    <script src="../../libs/views/lists/GenericListView.js"></script>
+    <script src="../../libs/models/lists/StaticList.js"></script>
+    <script src="../../libs/views/lists/StaticListView.js"></script>
+    <script src="../../libs/models/lists/DynamicList.js"></script>
+    <script src="../../libs/views/lists/DynamicListView.js"></script>
+    <!-- END JAVASCRIPTS -->
+
+    <!-- Mobile View-->
+    <meta name="viewport" content="user-scalable=yes, width=device-width, initial-scale=1.0"/>
+
+    <meta name="distribution" content="global">
+    <meta name="rating" content="general">
+    <meta name="author" content="WebAD">
+    <meta name="publisher" content="WebAD">
+    <meta name="copyright" content="© WebAD Team 2018">
+
+    <meta name="resource-type" content="document">
+    <meta name="application-name" content="WebAD">
+    <meta name="msapplication-tooltip" content="WebAD Website">
+    <meta name="msapplication-window" content="width=1024;height=768">
+
+    <script>
+        "use strict"; // execute code in strict mode
+        let listContainer;
+        let genericListViewContainer;
+        let dynamicListViewContainer;
+        let staticListViewContainer;
+        let elementsRemainingToAdd = [];
+
+        // region initialisation and callback functions
+        function init() {
+            console.log("Executing init()");
+            genericListViewContainer = document.getElementById("genericListContainer");
+            dynamicListViewContainer = document.getElementById("dynamicListContainer");
+            staticListViewContainer = document.getElementById("staticListContainer");
+            let initialSpeed = 5;
+            $("speed").val(initialSpeed);
+            listContainer = new ListContainer(genericListViewContainer.id, dynamicListViewContainer.id,
+                staticListViewContainer.id, initialSpeed, operationFinished, operatingChanged);
+        }
+
+        /**
+         * Fired by ListContainer after a change in 'operating'.
+         * Is used to change the usability of the control elements
+         * and the visibility of the 'play/pause' button and 'step' button.
+         */
+        function operatingChanged(state) {
+            // parseInt won't ever return NaN here. This is already handled on change of the speed.
+            let currentSpeed = parseInt($("#speed").val(), 10);
+            console.log("Operating changed to " + state);
+            refreshMethodElementsUsability(state);
+            refreshControlElementsUsability(state);
+
+            // if speed is 0 or operating is false -> play/step visible
+            // only if speed != 0 and operating is true -> pause visible
+            if (currentSpeed === 0 || !state) {
+                changePauseButtonVisibility(false);
+                changePlayButtonVisibility(true);
+                changeStepButtonVisibility(true);
+            } else {
+                changePauseButtonVisibility(true);
+                changePlayButtonVisibility(false);
+                changeStepButtonVisibility(false);
+            }
+        }
+
+        /**
+         * fired by ListContainer after an operation finished
+         * used to add multiple elements in a row
+         * idea behind: as long as there are elements remaining to add, this
+         * function calls the add method of ListContainer. After an operation
+         * is complete, ListContainer calls this function as it was given to the
+         * ListContainer as callback.
+         */
+        function operationFinished() {
+            console.log("Operations Finished");
+            if (elementsRemainingToAdd.length > 0)
+                listContainer.add(elementsRemainingToAdd.shift());
+        }
+
+        // endregion
+
+        // region method functions
+        function generateEmptyList(staticListMaxLength) {
+            console.log("Executing generateEmptyList()");
+            listContainer.generateEmptyLists(staticListMaxLength);
+        }
+
+        function generateRandomList() {
+            console.log("Executing generateRandomList()");
+            listContainer.generateRandomLists();
+        }
+
+        function addElements(elements) {
+            console.log("Executing addElements()");
+            // first remove any whitespace character with regex \s+ and g (global flag) then split between each character
+            elementsRemainingToAdd = elements.replace(/\s+/g, '').split("");
+            listContainer.add(elementsRemainingToAdd.shift());
+        }
+
+        function addRandomElement() {
+            console.log("Executing addRandomElement()");
+            listContainer.addRandomElement();
+        }
+
+        function addAtNthPosition(element, pos) {
+            console.log("Executing addAtNthPosition()");
+            listContainer.addAtNthPosition(element, pos);
+        }
+
+        function removeFirstElement() {
+            console.log("Executing removeFirstElement()");
+            listContainer.removeFirstElement();
+        }
+
+        function removeSpecificElement(element) {
+            console.log("Executing removeSpecificElement()");
+            listContainer.removeElement(element);
+        }
+
+        function removeRandomElement() {
+            console.log("Executing removeRandomElement()");
+            listContainer.removeRandomElement();
+        }
+
+        function removeNthElement(pos) {
+            console.log("Executing removeNthElement()");
+            listContainer.removeNthElement(pos);
+        }
+
+        function accessFirstElement() {
+            console.log("Executing accessFirstElement()");
+            listContainer.firstElement();
+        }
+
+        function accessNthElement(pos) {
+            console.log("Executing accessNthElement()");
+            listContainer.accessNthElement(pos);
+        }
+
+        function searchElement(element) {
+            console.log("Executing searchElement()");
+            listContainer.searchElement(element);
+        }
+
+        function countElements() {
+            console.log("Executing countElements()");
+            listContainer.countElements();
+        }
+
+        // endregion
+
+        // region config functions
+        function changeMaxLength(newMaxLength) {
+            console.log("Executing changeMaxLength()");
+            listContainer.changeStaticListMaxLength(newMaxLength);
+        }
+
+        /**
+         * Is called on change of the speed input field.
+         * Checks the value, parses it to integer and writes
+         * the integer back to the input field to show the
+         * correct value. If an invalid number is typed in
+         * by the user, it gets changed to the standard value.
+         */
+        function speed() {
+            // updates the input field in case that the user sets values out of bounds
+            // just for correct displaying, there are limits in the setters of the lists themselves
+            let elem = $("#speed");
+            let intSpeed = parseInt(elem.val(), 10);
+            if (isNaN(intSpeed)) // set default value when NaN is returned
+                intSpeed = 5;
+
+            if (intSpeed < 0)
+                elem.val(0);
+            else if (intSpeed > 10)
+                elem.val(10);
+            else
+                elem.val(intSpeed);
+
+            // switch visibility of 'manualMode' text
+            // if this happens while an animation is running,
+            // change the visibility of the play/pause/step buttons
+            if (intSpeed === 0) {
+                document.getElementById("manualMode").style.visibility = 'visible';
+                changePauseButtonVisibility(false);
+                changePlayButtonVisibility(true);
+                changeStepButtonVisibility(true);
+            } else
+                document.getElementById("manualMode").style.visibility = 'hidden';
+
+            listContainer.changeSpeed(intSpeed,
+                document.getElementById("checkboxGenericList").checked,
+                document.getElementById("checkboxStaticList").checked,
+                document.getElementById("checkboxDynamicList").checked);
+        }
+
+        // endregion
+
+        // region control element functions
+        function zoomIn() {
+            listContainer.zoomIn();
+        }
+
+        function zoomOut() {
+            listContainer.zoomOut();
+        }
+
+        function first() {
+            // parseInt won't ever return NaN here. This is already handled on change of the speed.
+            let currentSpeed = parseInt($("#speed").val(), 10);
+            listContainer.firstState(currentSpeed,
+                document.getElementById("checkboxGenericList").checked,
+                document.getElementById("checkboxStaticList").checked,
+                document.getElementById("checkboxDynamicList").checked);
+        }
+
+        function prev() {
+            // parseInt won't ever return NaN here. This is already handled on change of the speed.
+            let currentSpeed = parseInt($("#speed").val(), 10);
+            listContainer.previousState(currentSpeed,
+                document.getElementById("checkboxGenericList").checked,
+                document.getElementById("checkboxStaticList").checked,
+                document.getElementById("checkboxDynamicList").checked);
+        }
+
+        function next() {
+            // parseInt won't ever return NaN here. This is already handled on change of the speed.
+            let currentSpeed = parseInt($("#speed").val(), 10);
+            listContainer.nextState(currentSpeed,
+                document.getElementById("checkboxGenericList").checked,
+                document.getElementById("checkboxStaticList").checked,
+                document.getElementById("checkboxDynamicList").checked);
+        }
+
+        function last() {
+            // parseInt won't ever return NaN here. This is already handled on change of the speed.
+            let currentSpeed = parseInt($("#speed").val(), 10);
+            listContainer.lastState(currentSpeed,
+                document.getElementById("checkboxGenericList").checked,
+                document.getElementById("checkboxStaticList").checked,
+                document.getElementById("checkboxDynamicList").checked);
+        }
+
+        function step() {
+            listContainer.stepOperation();
+        }
+
+        /**
+         * Resumes the currently running operation.
+         * Sets play/step button hidden and pause button visible.
+         */
+        function play() {
+            listContainer.resumeOperation();
+            changePlayButtonVisibility(false);
+            changeStepButtonVisibility(false);
+            changePauseButtonVisibility(true);
+        }
+
+        /**
+         * Pauses the currently running operation.
+         * Sets pause button hidden and play/step button visible.
+         */
+        function pause() {
+            listContainer.pauseOperation();
+            changePauseButtonVisibility(false);
+            changePlayButtonVisibility(true);
+            changeStepButtonVisibility(true);
+        }
+
+        // endregion
+
+        // region html element usability handling
+        /**
+         * Refreshes the usability state of the method elements
+         * @param {boolean} isDisabled
+         */
+        function refreshMethodElementsUsability(isDisabled) {
+            /* Edge browser messes up again
+            document.getElementsByName("option_buttons").forEach((button) => {
+                button.disabled = isDisabled;
+            }); */
+            let buttons = document.getElementsByName("option_buttons");
+            for (let i = 0; i < buttons.length; i++)
+                buttons[i].disabled = isDisabled;
+        }
+
+        /**
+         * Refreshes the usability state of the control elements (back, forward, etc).
+         * Does the same with play/pause/step but in inverted logic.
+         * @param {boolean} isDisabled
+         */
+        function refreshControlElementsUsability(isDisabled) {
+            document.getElementById("first").disabled = isDisabled;
+            document.getElementById("prev").disabled = isDisabled;
+            document.getElementById("next").disabled = isDisabled;
+            document.getElementById("last").disabled = isDisabled;
+            document.getElementById("checkboxStaticListCode").disabled = isDisabled;
+            document.getElementById("checkboxDynamicListCode").disabled = isDisabled;
+            document.getElementById("play").disabled = !isDisabled;
+            document.getElementById("pause").disabled = !isDisabled;
+            document.getElementById("step").disabled = !isDisabled;
+        }
+
+        // endregion
+
+        // region html element visibility handling
+        /**
+         * Changes the visibility of the play button
+         * @param {boolean} visible true -> button visible, false -> button hidden
+         */
+        function changePlayButtonVisibility(visible) {
+            let button = $("#play");
+            if (visible) {
+                if (button.hasClass("hidden"))
+                    button.removeClass("hidden");
+            } else {
+                if (!button.hasClass("hidden"))
+                    button.addClass("hidden");
+            }
+        }
+
+        /**
+         * Changes the visibility of the pause button
+         * @param {boolean} visible true -> button visible, false -> button hidden
+         */
+        function changePauseButtonVisibility(visible) {
+            let button = $("#pause");
+            if (visible) {
+                if (button.hasClass("hidden"))
+                    button.removeClass("hidden");
+            } else {
+                if (!button.hasClass("hidden"))
+                    button.addClass("hidden");
+            }
+        }
+
+        /**
+         * Changes the visibility of the step button
+         * @param {boolean} visible true -> button visible, false -> button hidden
+         */
+        function changeStepButtonVisibility(visible) {
+            let button = $("#step");
+            if (visible) {
+                if (button.hasClass("hidden"))
+                    button.removeClass("hidden");
+            } else {
+                if (!button.hasClass("hidden"))
+                    button.addClass("hidden");
+            }
+        }
+
+        /**
+         * Manages the visibility of the different list containers.
+         * Also changes the speed of the list when it is hidden to the maximum of 10
+         * and starts it to prevent invisible lists that are paused.
+         * @param {string} containerType
+         */
+        function displayContainer(containerType) {
+            let checkbox;
+            // parseInt won't ever return NaN here. This is already handled on change of the speed.
+            let currentSpeed = parseInt($("#speed").val(), 10);
+            switch (containerType) {
+                case "generic":
+                    checkbox = document.getElementById("checkboxGenericList");
+                    document.getElementById("genericListContainerLabel").hidden = !checkbox.checked;
+                    document.getElementById("genericListContainer").hidden = !checkbox.checked;
+                    if (!checkbox.checked)
+                        listContainer.genericList.speed = 10;
+                    else
+                        listContainer.genericList.speed = currentSpeed;
+                    break;
+                case "static":
+                    checkbox = document.getElementById("checkboxStaticList");
+                    document.getElementById("staticListContainerLabel").hidden = !checkbox.checked;
+                    document.getElementById("staticListContainer").hidden = !checkbox.checked;
+                    if (!checkbox.checked) {
+                        listContainer.staticList.speed = 10;
+                        listContainer.staticList.resumeOperation();
+                    } else
+                        listContainer.staticList.speed = currentSpeed;
+                    break;
+                case "dynamic":
+                    checkbox = document.getElementById("checkboxDynamicList");
+                    document.getElementById("dynamicListContainerLabel").hidden = !checkbox.checked;
+                    document.getElementById("dynamicListContainer").hidden = !checkbox.checked;
+                    if (!checkbox.checked) {
+                        listContainer.dynamicList.speed = 10;
+                        listContainer.dynamicList.resumeOperation();
+                    } else
+                        listContainer.dynamicList.speed = currentSpeed;
+                    break;
+            }
+        }
+
+        // endregion
+    </script>
+</head>
+<body class="page-container-bg-solid page-md" style="background: #eff3f8;" onload="init(); return false;">
+<div class="page-container">
+    <div class="page-content-wrapper">
+
+        <div class="page-header navbar-white" style="background: #eff3f8; height: fit-content;">
+            <!-- BEGIN HEADER MENU -->
+            <div class="page-header-menu navbar-white">
+                <div class="container navbar-white">
+                    <div class="hor-menu  hor-menu-light">
+                        <div id="navPlaceholder">
+                            <script src="../../layout/assets/global/scripts/nav-menu.js"
+                                    type="text/javascript"></script>
+                        </div>
+                    </div>
+                    <!-- END MEGA MENU -->
+                </div>
+            </div>
+            <!-- END HEADER MENU -->
+            <!-- <%--Top Header--%> -->
+            <div id="logo_minDevice" class="page-header-top">
+                <div class="container">
+                    <div class="page-logo" style="/*width: 400px!important; */height: auto;">
+                        <div class="row">
+                            <div class="col-md-11">
+                            </div>
+                            <a href="../home/index.html">
+                                <div class="col-md-1 logo logo-margin-top">
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                    <a class="menu-toggler"></a>
+                    <div class="top-menu">
+
+                    </div>
+                </div>
+                <div class="container pull-center">
+                </div>
+            </div>
+            <!-- end top header -->
+        </div>
+
+        <!-- <%--content--%> -->
+        <div class="page-content" style="padding-top: 0;">
+            <div class="container">
+
+                <div class="page-content-inner inner-conent-padding-top" style="background:white">
+                    <!-- Conent WEB AD -->
+                    <div class="tab-pane active" id="form_1">
+                        <div class="portlet box blue">
+                            <div class="portlet-title">
+                                <div class="caption">
+                                    <i class="fa fa-gift"></i><span id="linearlist_title">Linear List</span></div>
+                                <div class="tools">
+                                    <a class="collapse" data-original-title="" title=""></a>
+                                    <a data-toggle="modal" data-target="#modalConfig" class="fa fa-wrench"
+                                       style="color:white" title="Config"></a>
+                                    <a data-toggle="modal" data-target="#modalInfo" class="fa fa-info-circle"
+                                       data-original-title="" title="Information"
+                                       style="color:white"></a>
+                                </div>
+                            </div>
+                            <div class="portlet-body form">
+                                <!-- BEGIN FORM-->
+                                <!-- <div action="#" class="horizontal-form "> -->
+                                <div class="form-body">
+                                    <div class="row" id="options_view" style="margin-bottom: 10px;">
+                                        <div class="col-md-12">
+                                            <label for="checkboxGenericList"
+                                                   class="checkbox-inline checkbox-button-linear-list"
+                                                   style="font-weight:bold;">
+                                                <input id="checkboxGenericList" checked
+                                                       type="checkbox" name="checkboxStaticList"
+                                                       onclick="displayContainer('generic')">Generic List</label>
+                                            <label for="checkboxStaticList"
+                                                   class="checkbox-inline checkbox-button-linear-list"
+                                                   style="font-weight:bold;">
+                                                <input id="checkboxStaticList" checked
+                                                       type="checkbox" name="checkboxStaticList"
+                                                       onclick="displayContainer('static')">Static List</label>
+                                            <label for="checkboxDynamicList"
+                                                   class="checkbox-inline checkbox-button-linear-list"
+                                                   style="font-weight:bold;">
+                                                <input id="checkboxDynamicList" checked
+                                                       type="checkbox" name="checkboxDynamicList"
+                                                       onclick="displayContainer('dynamic')">Dynamic List</label>
+                                            <label for="checkboxStaticListCode"
+                                                   class="checkbox-inline checkbox-button-linear-list"
+                                                   style="font-weight:bold;">
+                                                <input id="checkboxStaticListCode"
+                                                       type="checkbox" name="checkboxStaticListCode"
+                                                       onclick="listContainer.staticList.showOperationCode=this.checked">
+                                                Static List code sample</label>
+                                            <label for="checkboxDynamicListCode"
+                                                   class="checkbox-inline checkbox-button-linear-list"
+                                                   style="font-weight:bold;">
+                                                <input id="checkboxDynamicListCode"
+                                                       type="checkbox" name="checkboxDynamicListCode"
+                                                       onclick="listContainer.dynamicList.showOperationCode=this.checked">
+                                                Dynamic List code sample</label>
+                                        </div>
+                                    </div>
+                                    <!-- region Methods -->
+                                    <div class="row" id="options_desktop">
+                                        <div class="col-md-12">
+                                            <div class="btn-group">
+                                                <div class="btn-group">
+                                                    <button name="option_buttons" type="button"
+                                                            class="btn blue btn-outline dropdown-toggle"
+                                                            data-toggle="dropdown">
+                                                        Generate <span class="caret"></span></button>
+                                                    <ul class="dropdown-menu" role="menu">
+                                                        <li><a data-toggle="modal" data-target="#modal_generateEmpty">
+                                                            Empty List</a></li>
+                                                        <li><a onclick="generateRandomList()">Random List</a></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="btn-group">
+                                                    <button name="option_buttons" type="button"
+                                                            class="btn blue btn-outline dropdown-toggle"
+                                                            data-toggle="dropdown">
+                                                        Add <span class="caret"></span></button>
+                                                    <ul class="dropdown-menu" role="menu">
+                                                        <li><a data-toggle="modal" data-target="#modal_addElements">
+                                                            Elements</a></li>
+                                                        <li><a onclick="addRandomElement()">Random Element</a></li>
+                                                        <li><a data-toggle="modal" data-target="#modal_addAtNthPos">at
+                                                            nth Position</a></li>
+                                                    </ul>
+                                                </div>
+                                                <div class="btn-group">
+                                                    <button name="option_buttons" type="button"
+                                                            class="btn blue btn-outline dropdown-toggle"
+                                                            data-toggle="dropdown">
+                                                        Remove <span class="caret"></span></button>
+                                                    <ul class="dropdown-menu" role="menu">
+                                                        <li><a onclick="removeFirstElement()">First Element</a></li>
+                                                        <li><a data-toggle="modal"
+                                                               data-target="#modal_removeSpecificElement">
+                                                            Specific Element</a></li>
+                                                        <li><a onclick="removeRandomElement()">Random Element</a></li>
+                                                        <li><a data-toggle="modal"
+                                                               data-target="#modal_removeNthElement">nth Element</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div class="btn-group">
+                                                    <button name="option_buttons" type="button"
+                                                            class="btn blue btn-outline dropdown-toggle"
+                                                            data-toggle="dropdown">
+                                                        Access <span class="caret"></span></button>
+                                                    <ul class="dropdown-menu" role="menu">
+                                                        <li><a onclick="accessFirstElement()">First Element</a></li>
+                                                        <li><a data-toggle="modal"
+                                                               data-target="#modal_accessNthElement">nth Element</a>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <button name="option_buttons" type="button" class="btn blue btn-outline"
+                                                        data-toggle="modal" data-target="#modal_searchElement">
+                                                    Member
+                                                </button>
+                                                <button name="option_buttons" type="button" class="btn blue btn-outline"
+                                                        onclick="countElements()">Length
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row" id="options_minDevice">
+                                        <div class="col-md-12">
+                                            <div class="dropdown">
+                                                <button class="btn blue dropdown-toggle" type="button"
+                                                        data-toggle="dropdown">Methods <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu" role="menu">
+                                                    <li>
+                                                        <button name="option_buttons" type="button"
+                                                                class="btn blue btn-outline btn-block"
+                                                                data-toggle="modal" data-target="#modal_generateEmpty">
+                                                            Generate empty List
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button name="option_buttons" type="button"
+                                                                class="btn blue btn-outline btn-block"
+                                                                onclick="generateRandomList()">Generate random List
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button name="option_buttons" type="button"
+                                                                class="btn blue btn-outline btn-block"
+                                                                data-toggle="modal" data-target="#modal_addElements">
+                                                            Add Elements
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button name="option_buttons" type="button"
+                                                                class="btn blue btn-outline btn-block"
+                                                                onclick="addRandomElement()">Add random Element
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button name="option_buttons" type="button"
+                                                                class="btn blue btn-outline btn-block"
+                                                                data-toggle="modal" data-target="#modal_addAtNthPos">
+                                                            Add at nth Position
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button name="option_buttons" type="button"
+                                                                class="btn blue btn-outline btn-block"
+                                                                onclick="removeFirstElement()">Remove first Element
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button name="option_buttons" type="button"
+                                                                class="btn blue btn-outline btn-block"
+                                                                data-toggle="modal"
+                                                                data-target="#modal_removeSpecificElement">
+                                                            Remove specific Element
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button name="option_buttons" type="button"
+                                                                class="btn blue btn-outline btn-block"
+                                                                onclick="removeRandomElement()">Remove random Element
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button name="option_buttons" type="button"
+                                                                class="btn blue btn-outline btn-block"
+                                                                data-toggle="modal"
+                                                                data-target="#modal_removeNthElement">
+                                                            Remove nth Element
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button name="option_buttons" type="button"
+                                                                class="btn blue btn-outline btn-block"
+                                                                onclick="accessFirstElement()">Access first Element
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button name="option_buttons" type="button"
+                                                                class="btn blue btn-outline btn-block"
+                                                                data-toggle="modal"
+                                                                data-target="#modal_accessNthElement">
+                                                            Access nth Element
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button name="option_buttons" type="button"
+                                                                class="btn blue btn-outline btn-block"
+                                                                data-toggle="modal"
+                                                                data-target="#modal_searchElement">
+                                                            Member
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button name="option_buttons" type="button"
+                                                                class="btn blue btn-outline btn-block"
+                                                                onclick="countElements()">Length
+                                                        </button>
+                                                    </li>
+                                                    <li>
+                                                        <button name="option_buttons" type="button"
+                                                                class="btn blue btn-outline btn-block"
+                                                                data-toggle="modal"
+                                                                data-target="#modal_changeMaxLength">
+                                                            Change StaticList size
+                                                        </button>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <!-- endregion Options -->
+                                </div>
+                                <!-- </div> -->
+                                <!-- region Control Elements -->
+                                <div class="form-actions">
+                                    <div class="row">
+                                        <div class="col-md-1">
+                                        </div>
+                                        <div class="col-md-6 text-center">
+                                            <button type="button" class="btn blue" id="first"
+                                                    onclick="first()">
+                                                <i class="fa fa-fast-backward fa-lg"></i><span class="btn-recorder">First</span>
+                                            </button>
+                                            <button type="button" class="btn blue" id="prev"
+                                                    onclick="prev()">
+                                                <i class="fa fa-backward fa-lg"></i><span
+                                                    class="btn-recorder">Previous</span></button>
+                                            <button type="button" class="btn blue hidden" id="pause"
+                                                    onclick="pause()">
+                                                <i class="fa fa-pause fa-lg"></i><span
+                                                    class="btn-recorder">Pause</span></button>
+                                            <button type="button" class="btn blue" id="play"
+                                                    onclick="play()" disabled>
+                                                <i class='fa fa-play-circle-o fa-lg'></i><span
+                                                    class="btn-recorder">Play</span></button>
+                                            <button type="button" class="btn blue" id="step"
+                                                    onclick="step()" disabled>
+                                                <i class="fa fa-step-forward fa-lg"></i><span
+                                                    class="btn-recorder">Step</span></button>
+                                            <button type="button" class="btn blue" id="next"
+                                                    onclick="next()">
+                                                <i class="fa fa-forward fa-lg"></i><span
+                                                    class="btn-recorder">Next</span></button>
+                                            <button type="button" class="btn blue" id="last"
+                                                    onclick="last()">
+                                                <i class="fa fa-fast-forward fa-lg"></i><span
+                                                    class="btn-recorder">Last</span></button>
+                                        </div>
+                                        <div class="col-md-1">
+                                        </div>
+                                        <div class="col-md-4 text-center">
+                                            <button type="button" class="btn green" onclick="zoomOut()">
+                                                <i class="fa fa-search-minus fa-lg"></i><span
+                                                    class="btn-zoom">Zoom Out</span></button>
+                                            <button type="button" class="btn green" onclick="zoomIn()">
+                                                <i class="fa fa-search-plus fa-lg"></i><span
+                                                    class="btn-zoom">Zoom In</span></button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- endregion Control Elements -->
+                                <div class="form-body">
+                                    <div class="row">
+                                        <p><label id="genericListContainerLabel" for="genericListContainer">
+                                            Generic List</label></p>
+                                        <div id="genericListContainer" class="col-md-12 inner-content-container1"
+                                             style="max-height:425px;">
+                                        </div>
+                                        <p><label id="staticListContainerLabel" for="staticListContainer">
+                                            Static List</label></p>
+                                        <div id="staticListContainer" class="col-md-12 inner-content-container1"
+                                             style="max-height:425px;">
+                                        </div>
+                                        <p><label id="dynamicListContainerLabel" for="dynamicListContainer">
+                                            Dynamic List</label></p>
+                                        <div id="dynamicListContainer" class="col-md-12 inner-content-container1"
+                                             style="max-height:625px;">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END FORM-->
+                        </div>
+                    </div>
+                </div>
+                <div class="footer">
+                    <div class="container">
+                            <span style="font-size:12px">
+                            webAD is a web-based system designed for simple and intuitive learning of Algorithms and Datastructures.
+                             For further questions please contact:
+                            <a href="mailto:begy.volodimir@gmail.com">begy.volodimir@gmail.com</a></span>
+                    </div>
+                    <div id="return-to-top" class="scroll-to-top" title="return to top">
+                        <i id="top-arrow"></i>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+<!-- region Modal Config -->
+<div id="modalConfig" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Config</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label for="speed" class="control-label col-md-4">Animation speed:</label>
+                            <div class="col-md-2">
+                                <input type="number" class="input-control" name="speed" style="width:40px" id="speed"
+                                       min="0" max="10" step="1" value="5"
+                                       onchange="speed()">
+                            </div>
+                            <label id="manualMode" class="control-label alert-box2-manuel"
+                                   style="margin-top:5px;">Manual Mode</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 margin-top-15">
+                        <button name="option_buttons" type="button" class="btn blue"
+                                data-toggle="modal" data-target="#modal_changeMaxLength">
+                            Change maximum length of StaticList
+                        </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <br>
+                        <p>During an animation no other function can be started until it's finished.</p>
+                        <p>Animation can be stopped at any time using the pause button. The pause
+                            button will turn into a play button. Resume by pressing the play button.</p>
+                        <p>While an animation is paused, click on the step button to continue step by step.</p>
+                        <p>Animation speed ranges from 0 to 10, with 0 being manual mode and 10 being the fastest.
+                            While manual mode is active, animations don't start automatically. Instead only the first
+                            step gets executed immediately. When pressing the play button in manual mode, the current
+                            operation will proceed like in automatic mode with a speed value of 5.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- </div> -->
+<!-- endregion -->
+
+<!-- region Modal Info -->
+<div id="modalInfo" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Info</h4>
+            </div>
+            <div class="modal-body">
+                <div class="col-md-12">
+                    <p>
+                        „Lists are a basic example of containers, as they contain other values.
+                        If the same value occurs multiple times, each occurrence is considered a
+                        distinct item. <br>The name list is also used for several concrete data
+                        structures that can be used to implement abstract lists, especially linked
+                        lists. [...] Lists are typically implemented either as linked lists
+                        (either singly or doubly linked) or as arrays, usually variable length or dynamic
+                        arrays. The standard way of implementing lists, originating with the programming
+                        language Lisp, is to have each element of the list contain both its value
+                        and a pointer indicating the location of the next element in the list.“
+                    </p>
+                    Source: <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">
+                    https://en.wikipedia.org/wiki/List_(abstract_data_type)</a>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- endregion -->
+
+<!-- region Modal generateEmpty -->
+<div id="modal_generateEmpty" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Generate Empty Lists</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_generateEmpty">
+                    <div class="form-group">
+                        <label for="form_generateEmpty_staticMaxLength" class="col-form-label">StaticList
+                            maxlength:</label>
+                        <input type="number" class="form-control" id="form_generateEmpty_staticMaxLength"
+                               min="0" max="20" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!-- submit outside of form doesn't work in IE11 -->
+                <button type="submit" class="btn btn-primary" form="form_generateEmpty">Generate</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- endregion -->
+
+<!-- region Modal addElements -->
+<div id="modal_addElements" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add Elements</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_addElements">
+                    <div class="form-group">
+                        <label for="form_addElements_elements" class="col-form-label">Elements:</label>
+                        <input title="Each character is inserted individually" type="text" class="form-control"
+                               id="form_addElements_elements" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!-- submit outside of form doesn't work in IE11 -->
+                <button type="submit" class="btn btn-primary" form="form_addElements">Add</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- endregion -->
+
+<!-- region Modal addAtNthPosition -->
+<div id="modal_addAtNthPos" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Add Element at nth Position</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_addAtNthPos">
+                    <div class="form-group">
+                        <label for="form_addAtNthPos_pos" class="col-form-label">Position:</label>
+                        <input type="number" class="form-control" id="form_addAtNthPos_pos" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="form_addAtNthPos_element" class="col-form-label">Element:</label>
+                        <input type="text" class="form-control" id="form_addAtNthPos_element" maxlength="1" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!-- submit outside of form doesn't work in IE11 -->
+                <button type="submit" class="btn btn-primary" form="form_addAtNthPos">Add</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- endregion -->
+
+<!-- region Modal removeSpecificElement -->
+<div id="modal_removeSpecificElement" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Remove specific Element</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_removeSpecificElement">
+                    <div class="form-group">
+                        <label for="form_removeSpecificElement_element" class="col-form-label">Element:</label>
+                        <input type="text" class="form-control" id="form_removeSpecificElement_element" maxlength="1"
+                               required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!-- submit outside of form doesn't work in IE11 -->
+                <button type="submit" class="btn btn-primary" form="form_removeSpecificElement">Remove</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- endregion -->
+
+<!-- region Modal removeNthElement -->
+<div id="modal_removeNthElement" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Remove Element at nth Position</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_removeNthElement">
+                    <div class="form-group">
+                        <label for="form_removeNthElement_pos" class="col-form-label">Position:</label>
+                        <input type="number" class="form-control" id="form_removeNthElement_pos" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!-- submit outside of form doesn't work in IE11 -->
+                <button type="submit" class="btn btn-primary" form="form_removeNthElement">Remove</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- endregion -->
+
+<!-- region Modal accessNthElement -->
+<div id="modal_accessNthElement" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Access Element at nth Position</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_accessNthElement">
+                    <div class="form-group">
+                        <label for="form_accessNthElement_pos" class="col-form-label">Position:</label>
+                        <input type="number" class="form-control" id="form_accessNthElement_pos" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!-- submit outside of form doesn't work in IE11 -->
+                <button type="submit" class="btn btn-primary" form="form_accessNthElement">Access</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- endregion -->
+
+<!-- region Modal searchElement -->
+<div id="modal_searchElement" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Member</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_searchElement">
+                    <div class="form-group">
+                        <label for="form_searchElement_element" class="col-form-label">Element:</label>
+                        <input type="text" class="form-control" id="form_searchElement_element" maxlength="1" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!-- submit outside of form doesn't work in IE11 -->
+                <button type="submit" class="btn btn-primary" form="form_searchElement">Search</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- endregion -->
+
+<!-- region Modal changeMaxLength -->
+<div id="modal_changeMaxLength" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">Change StaticList maxlength</h4>
+            </div>
+            <div class="modal-body">
+                <form id="form_changeMaxLength">
+                    <div class="form-group">
+                        <label for="form_changeMaxLength_staticMaxLength" class="col-form-label">New maxlength:</label>
+                        <input type="number" class="form-control" id="form_changeMaxLength_staticMaxLength"
+                               min="0" max="20" required>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <!-- submit outside of form doesn't work in IE11 -->
+                <button type="submit" class="btn btn-primary" form="form_changeMaxLength">Change</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- endregion -->
+
+<!-- region Modal Behavior -->
+<script>
+    "use strict"; // execute code in strict mode
+
+    /**
+     * sets focus on modal shown to the specified input field
+     * @param modal in which the input field is located
+     * @param field to set focus on
+     */
+    function setFocus(modal, field) {
+        modal.on('shown.bs.modal', function () {
+            field.focus();
+        });
+    }
+
+    /**
+     * resets forms of a modal on hidden event
+     * @param modal to reset
+     */
+    function resetModalForm(modal) {
+        modal.on('hidden.bs.modal', function () {
+            $(this).find('form').trigger('reset');
+        });
+    }
+
+    // region ********** Modal generateEmpty **********
+    { // scope for local variables
+        let modal = $('#modal_generateEmpty');
+        let form = $('#form_generateEmpty');
+        let staticMaxLengthField = $('#form_generateEmpty_staticMaxLength');
+
+        // set focus
+        setFocus(modal, staticMaxLengthField);
+        // catch submit event
+        form.submit(function (event) {
+            // prevent default browser behavior
+            event.preventDefault();
+            // process inputs
+            generateEmptyList(staticMaxLengthField.val());
+            // hide modal
+            modal.modal('hide');
+        });
+        // reset form fields when modal is hidden
+        resetModalForm(modal);
+    }
+    // endregion
+
+    // region ********** Modal addElements **********
+    { // scope for local variables
+        let modal = $('#modal_addElements');
+        let form = $('#form_addElements');
+        let elementField = $('#form_addElements_elements');
+
+        // set focus
+        setFocus(modal, elementField);
+        // catch submit event
+        form.submit(function (event) {
+            // prevent default browser behavior
+            event.preventDefault();
+            // process inputs
+            addElements(elementField.val());
+            // hide modal
+            modal.modal('hide');
+        });
+        // reset form fields when modal is hidden
+        resetModalForm(modal);
+    }
+    // endregion
+
+    // region ********** Modal addAtNthPosition **********
+    { // scope for local variables
+        let modal = $('#modal_addAtNthPos');
+        let form = $('#form_addAtNthPos');
+        let posField = $('#form_addAtNthPos_pos');
+        let elementField = $('#form_addAtNthPos_element');
+
+        // set focus
+        setFocus(modal, posField);
+        // catch submit event
+        form.submit(function (event) {
+            // prevent default browser behavior
+            event.preventDefault();
+            // process inputs
+            addAtNthPosition(elementField.val(), posField.val());
+            // hide modal
+            modal.modal('hide');
+        });
+        // reset form fields when modal is hidden
+        resetModalForm(modal);
+    }
+    // endregion
+
+    // region ********** Modal removeSpecificElement **********
+    { // scope for local variables
+        let modal = $('#modal_removeSpecificElement');
+        let form = $('#form_removeSpecificElement');
+        let elementField = $('#form_removeSpecificElement_element');
+
+        // set focus
+        setFocus(modal, elementField);
+        // catch submit event
+        form.submit(function (event) {
+            // prevent default browser behavior
+            event.preventDefault();
+            // process inputs
+            removeSpecificElement(elementField.val());
+            // hide modal
+            modal.modal('hide');
+        });
+        // reset form fields when modal is hidden
+        resetModalForm(modal);
+    }
+    // endregion
+
+    // region ********** Modal removeNthElement **********
+    { // scope for local variables
+        let modal = $('#modal_removeNthElement');
+        let form = $('#form_removeNthElement');
+        let posField = $('#form_removeNthElement_pos');
+
+        // set focus
+        setFocus(modal, posField);
+        // catch submit event
+        form.submit(function (event) {
+            // prevent default browser behavior
+            event.preventDefault();
+            // process inputs
+            removeNthElement(posField.val());
+            // hide modal
+            modal.modal('hide');
+        });
+        // reset form fields when modal is hidden
+        resetModalForm(modal);
+    }
+    // endregion
+
+    // region ********** Modal accessNthElement **********
+    { // scope for local variables
+        let modal = $('#modal_accessNthElement');
+        let form = $('#form_accessNthElement');
+        let posField = $('#form_accessNthElement_pos');
+
+        // set focus
+        setFocus(modal, posField);
+        // catch submit event
+        form.submit(function (event) {
+            // prevent default browser behavior
+            event.preventDefault();
+            // process inputs
+            accessNthElement(posField.val());
+            // hide modal
+            modal.modal('hide');
+        });
+        // reset form fields when modal is hidden
+        resetModalForm(modal);
+    }
+    // endregion
+
+    // region ********** Modal searchElement **********
+    { // scope for local variables
+        let modal = $('#modal_searchElement');
+        let form = $('#form_searchElement');
+        let elementField = $('#form_searchElement_element');
+
+        // set focus
+        setFocus(modal, elementField);
+        // catch submit event
+        form.submit(function (event) {
+            // prevent default browser behavior
+            event.preventDefault();
+            // process inputs
+            searchElement(elementField.val());
+            // hide modal
+            modal.modal('hide');
+        });
+        // reset form fields when modal is hidden
+        resetModalForm(modal);
+    }
+    // endregion
+
+    // region ********** Modal changeMaxLength**********
+    { // scope for local variables
+        let modal = $('#modal_changeMaxLength');
+        let form = $('#form_changeMaxLength');
+        let staticMaxLengthField = $('#form_changeMaxLength_staticMaxLength');
+
+        // set focus
+        setFocus(modal, staticMaxLengthField);
+        // catch submit event
+        form.submit(function (event) {
+            // prevent default browser behavior
+            event.preventDefault();
+            // process inputs
+            changeMaxLength(staticMaxLengthField.val());
+            // hide modal
+            modal.modal('hide');
+        });
+        // reset form fields when modal is hidden
+        resetModalForm(modal);
+    }
+    // endregion
+
+</script>
+<!-- endregion -->
+</body>
+
+</html>
