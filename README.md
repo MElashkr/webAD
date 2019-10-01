@@ -1,6 +1,6 @@
 # webAD v2.0
 
-Provide an a responsive Application for smart phones, tablet and desktop.
+Provides a responsive Application for smart phones, tablet and desktop.
 
 Built on the MVC architectural pattern webAD visualizes algorithms and data structures. All JS files are in the 'libs' directory.
 
